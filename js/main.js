@@ -296,3 +296,44 @@
 
 })(jQuery);
 
+window.addEventListener("load", fetchAllMenu)
+let drinksContainer = document.querySelector("#all-drinks-container")
+let foodsContainer = document.querySelector("#all-foods-container")
+async function fetchAllMenu(e) {
+    e.preventDefault()
+    try {
+        const response = await fetch('http://127.0.0.1:5000/menu/all', {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        if (response.ok) {
+            const jsonResponse = await response.json()
+            for (let category in jsonResponse["data"]) {
+                const cards = jsonResponse["data"][`${category}`].map((menu) => {
+                    return `<div class="col-md-4 text-center">
+								<div class="menu-wrap">
+									<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url});"></a>
+									<div class="text">
+										<h3><a href="#">${menu.name}</a></h3>
+										<p class="desc pt-1">${menu.desc}</p>
+										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
+										<p><a href="#" class="btn btn-primary btn-outline-primary">Add to cart</a></p>
+									</div>
+								</div>
+							</div>`
+                })
+                if (category === "drinks"){
+                    drinksContainer.innerHTML = cards.join('<br/>')
+                } else {
+                    foodsContainer.innerHTML = cards.join('<br/>')
+                }
+            }
+
+        } else {
+            throw await response.json()
+        }
+    } catch (err) {
+        console.error(err.message)
+    }
+}
+
