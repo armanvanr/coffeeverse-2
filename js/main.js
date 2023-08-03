@@ -297,12 +297,11 @@
 })(jQuery);
 
 if (localStorage.length > 0 && localStorage.userData !== null){
-	console.log('user,check')
 	document.getElementById('nav-sign-in').style.display = 'none'
 	document.getElementById('nav-dropdown').style.display = 'block'
 	document.getElementById('nav-cart').style.display = 'block'
+	localStorage.setItem("cartData", JSON.stringify({}))
 } else {
-	console.log('!user,check')
 	document.getElementById('nav-sign-in').style.display = 'block'
 	document.getElementById('nav-dropdown').style.display = 'none'
 	document.getElementById('nav-cart').style.display = 'none'
@@ -313,9 +312,9 @@ if (localStorage.length > 0 && localStorage.userData !== null){
 if (window.location.href.match('http://127.0.0.1:5500/menu.html') != null){
 	window.addEventListener("load", fetchAllMenu)
 }
-let drinksContainer = document.querySelector("#all-drinks-container")
-let foodsContainer = document.querySelector("#all-foods-container")
 async function fetchAllMenu() {
+	let drinksContainer = document.querySelector("#all-drinks-container")
+	let foodsContainer = document.querySelector("#all-foods-container")
     try {
         const response = await fetch('http://127.0.0.1:5000/menu/all', {
             method: "GET",
@@ -332,7 +331,7 @@ async function fetchAllMenu() {
 										<h3><a href="#">${menu.name}</a></h3>
 										<p class="desc pt-1">${menu.desc}</p>
 										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-										<p><a href="#" class="btn btn-primary btn-outline-primary">Add to cart</a></p>
+										<p><a class="btn btn-primary btn-outline-primary" name="${menu.id}" id="cart-menu-${menu.id}">Add to cart</a></p>
 									</div>
 								</div>
 							</div>`
@@ -343,13 +342,24 @@ async function fetchAllMenu() {
                     foodsContainer.innerHTML = cards.join('<br/>')
                 }
             }
-
+			menuCartButtons = document.querySelectorAll("[id^='cart-menu']")
+			for (let cartBtn of menuCartButtons){
+				cartBtn.addEventListener('click', authCheck(cartBtn.name))
+			}
         } else {
             throw await response.json()
         }
     } catch (err) {
         console.error(err.message)
     }
+}
+function authCheck(menuId){
+	if (localStorage.length > 0 && localStorage.userData !== null){
+		cart = JSON.parse(localStorage.getItem("cartData"))
+		cart[menuId] = 1
+		console.log(cart)
+		// localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]))
+	}
 }
 
 //Sign In
@@ -449,9 +459,6 @@ let signOutBtn = document.getElementById('nav-sign-out')
 signOutBtn.addEventListener('click', signout)
 function signout(e){
 	e.preventDefault()
-	// document.getElementById('nav-sign-in').style.display = 'block'
-	// document.getElementById('nav-dropdown').style.display = 'none'
-	// document.getElementById('nav-cart').style.display = 'none'
 	localStorage.clear()
 	location.reload()
 }
