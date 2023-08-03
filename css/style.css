@@ -7806,16 +7806,36 @@ h1, h2, h3, h4, h5,
   @media (min-width: 768px) {
     .ftco-about .one-half {
       padding: 8% 13% 8% 5%;
-      width: 50%; } }
+      width: 50%; }
+    .ftco-about #container-sign-in{
+      padding: 3% 13% 8% 5%;
+      width: 50%; } 
+    .ftco-about #container-sign-up{
+      padding: 1% 13% 1% 5%;
+      width: 50%; } 
+     }
   .ftco-about .one-half.img {
     display: block; }
     @media (max-width: 767.98px) {
       .ftco-about .one-half.img {
-        height: 300px; } }
+        height: 300px; } 
+      #img-sign-in{
+        background-size: cover;
+        background-position: center;
+      }}
   @media (max-width: 768px) {
     .ftco-about .one-half .overlap {
       padding: 40px 20px; 
       margin: 0 80px;} }
+
+.ftco-about .sign-up-group a:hover{
+  color: #fff;
+}
+
+#main-sign-in {
+  margin-top: 90px;
+  height: 100vh;
+}
 
 .ftco-services {
   color: #1d150b;
