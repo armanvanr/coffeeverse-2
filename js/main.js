@@ -296,11 +296,13 @@
 
 })(jQuery);
 
-window.addEventListener("load", fetchAllMenu)
+//Show All Menu Items
+if (window.location.href.match('http://127.0.0.1:5500/menu.html') != null){
+	window.addEventListener("load", fetchAllMenu)
+}
 let drinksContainer = document.querySelector("#all-drinks-container")
 let foodsContainer = document.querySelector("#all-foods-container")
-async function fetchAllMenu(e) {
-    e.preventDefault()
+async function fetchAllMenu() {
     try {
         const response = await fetch('http://127.0.0.1:5000/menu/all', {
             method: "GET",
@@ -337,3 +339,96 @@ async function fetchAllMenu(e) {
     }
 }
 
+//Sign In
+if (window.location.href.match('http://127.0.0.1:5500/signin.html') != null){
+	let formSubmit = document.getElementById("btn-sign-in")
+	formSubmit.addEventListener("click", signin)
+}
+function signin(e) {
+	
+    e.preventDefault()
+    let email = document.getElementById("sign-in-email").value
+    let password = document.getElementById("sign-in-password").value
+    let token = btoa(email + ":" + password)
+    let myHeaders = new Headers()
+    myHeaders.append("Authorization", "Basic" + " " + token)
+    myHeaders.append("Content-type", "application/json; charset=UTF-8")
+
+    let statusBox = document.getElementById("sign-in-status")
+	console.log(statusBox)
+    fetch('http://127.0.0.1:5000/user/login', {
+        method: 'POST',
+        headers: myHeaders,
+    })
+        .then((response) => {
+            if (response.ok === false) {
+                throw response
+            } else {
+                return response.json()
+            }
+        })
+        .then((jsonResponse) => {
+                localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
+                statusBox.innerHTML = null
+                // window.location.href = 'http://127.0.0.1:5501/index.html'
+        })
+        .catch((error) => {
+            statusBox.style.color = "#ff3f3f"
+            if (error.status === 401) {
+                statusBox.innerHTML = "Email and password does not match"
+            } else if (error.status === 404) {
+                statusBox.innerHTML = "User not found"
+            }
+        });
+}
+
+//Sign Up
+if (window.location.href.match('http://127.0.0.1:5500/signup.html') != null){
+	let formSubmit = document.getElementById("btn-sign-up")
+	formSubmit.addEventListener("click", signup)
+}
+
+async function signup(e) {
+    e.preventDefault()
+    let name = document.getElementById("sign-up-name").value
+    let email = document.getElementById("sign-up-email").value
+    let password = document.getElementById("sign-up-password").value
+    let confirmPassword = document.getElementById("sign-up-confirm-password").value
+    let statusBox = document.getElementById("sign-up-status")
+	if (!name || !email || !password || !confirmPassword){
+        statusBox.style.color = "#ff3f3f"
+        statusBox.innerHTML = "Please fill all form fields"
+		throw Error("BAD REQUEST")
+    }
+    if (password === confirmPassword) {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/user/register', {
+                method: "POST",
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: "member"
+                }),
+                headers: { "Content-type": "application/json; charset=UTF-8" }
+            })
+            if (response.ok) {
+                statusBox.innerHTML = "Account created successfully"
+                statusBox.style.color = "#4bb543"
+                let inputFields = document.querySelectorAll("input")
+                for (let el of inputFields) {
+                    el.value = ""
+                }
+            } else {
+                throw await response.json()
+            }
+        } catch (error) {
+            statusBox.innerHTML = error.message
+            statusBox.style.color = "#ff3f3f"
+        }
+    } else {
+        statusBox.innerHTML = "Password does not match"
+        statusBox.style.color = "#ff3f3f"
+    }
+
+}
