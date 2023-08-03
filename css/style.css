@@ -7523,6 +7523,11 @@ h1, h2, h3, h4, h5,
     color: #fff;
     letter-spacing: 5px; }
 
+.dropdown-toggle .icon {
+  font-size: 20px;
+  color: #fff;
+}
+
 .owl-carousel {
   position: relative; }
   .owl-carousel .owl-item {

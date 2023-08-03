@@ -296,6 +296,19 @@
 
 })(jQuery);
 
+if (localStorage.length > 0 && localStorage.userData !== null){
+	console.log('user,check')
+	document.getElementById('nav-sign-in').style.display = 'none'
+	document.getElementById('nav-dropdown').style.display = 'block'
+	document.getElementById('nav-cart').style.display = 'block'
+} else {
+	console.log('!user,check')
+	document.getElementById('nav-sign-in').style.display = 'block'
+	document.getElementById('nav-dropdown').style.display = 'none'
+	document.getElementById('nav-cart').style.display = 'none'
+}
+
+
 //Show All Menu Items
 if (window.location.href.match('http://127.0.0.1:5500/menu.html') != null){
 	window.addEventListener("load", fetchAllMenu)
@@ -345,7 +358,6 @@ if (window.location.href.match('http://127.0.0.1:5500/signin.html') != null){
 	formSubmit.addEventListener("click", signin)
 }
 function signin(e) {
-	
     e.preventDefault()
     let email = document.getElementById("sign-in-email").value
     let password = document.getElementById("sign-in-password").value
@@ -355,7 +367,6 @@ function signin(e) {
     myHeaders.append("Content-type", "application/json; charset=UTF-8")
 
     let statusBox = document.getElementById("sign-in-status")
-	console.log(statusBox)
     fetch('http://127.0.0.1:5000/user/login', {
         method: 'POST',
         headers: myHeaders,
@@ -370,7 +381,8 @@ function signin(e) {
         .then((jsonResponse) => {
                 localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
                 statusBox.innerHTML = null
-                // window.location.href = 'http://127.0.0.1:5501/index.html'
+				// location.reload()
+                window.location.href = 'http://127.0.0.1:5500/index.html'
         })
         .catch((error) => {
             statusBox.style.color = "#ff3f3f"
@@ -430,5 +442,16 @@ async function signup(e) {
         statusBox.innerHTML = "Password does not match"
         statusBox.style.color = "#ff3f3f"
     }
+}
 
+//Sign Out
+let signOutBtn = document.getElementById('nav-sign-out')
+signOutBtn.addEventListener('click', signout)
+function signout(e){
+	e.preventDefault()
+	// document.getElementById('nav-sign-in').style.display = 'block'
+	// document.getElementById('nav-dropdown').style.display = 'none'
+	// document.getElementById('nav-cart').style.display = 'none'
+	localStorage.clear()
+	location.reload()
 }
