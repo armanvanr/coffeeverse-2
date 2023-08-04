@@ -296,11 +296,11 @@
 
 })(jQuery);
 
-if (localStorage.length > 0 && localStorage.userData !== null){
+if (localStorage.length > 0){
 	document.getElementById('nav-sign-in').style.display = 'none'
 	document.getElementById('nav-dropdown').style.display = 'block'
 	document.getElementById('nav-cart').style.display = 'block'
-	localStorage.setItem("cartData", JSON.stringify({}))
+	updateCartCount()
 } else {
 	document.getElementById('nav-sign-in').style.display = 'block'
 	document.getElementById('nav-dropdown').style.display = 'none'
@@ -331,7 +331,7 @@ async function fetchAllMenu() {
 										<h3><a href="#">${menu.name}</a></h3>
 										<p class="desc pt-1">${menu.desc}</p>
 										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-										<p><a class="btn btn-primary btn-outline-primary" name="${menu.id}" id="cart-menu-${menu.id}">Add to cart</a></p>
+										<p><a class="btn btn-primary btn-outline-primary" name="${menu.id}" id="cart-menu-${menu.id}" onclick="addItemToCart(name)">Add to cart</a></p>
 									</div>
 								</div>
 							</div>`
@@ -342,9 +342,10 @@ async function fetchAllMenu() {
                     foodsContainer.innerHTML = cards.join('<br/>')
                 }
             }
-			menuCartButtons = document.querySelectorAll("[id^='cart-menu']")
-			for (let cartBtn of menuCartButtons){
-				cartBtn.addEventListener('click', authCheck(cartBtn.name))
+			//persist disabled state of cart button each time the menu page has finished fetching data
+			if (localStorage.length > 0){
+				disableCartBtn()
+				updateCartCount()
 			}
         } else {
             throw await response.json()
@@ -353,12 +354,42 @@ async function fetchAllMenu() {
         console.error(err.message)
     }
 }
-function authCheck(menuId){
-	if (localStorage.length > 0 && localStorage.userData !== null){
-		cart = JSON.parse(localStorage.getItem("cartData"))
-		cart[menuId] = 1
-		console.log(cart)
-		// localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]))
+
+function addItemToCart(menuId){
+	if (localStorage.length > 0){
+		const cart = JSON.parse(localStorage.getItem("cartData"))
+		cart.push({
+			menu_id : menuId,
+			qty: 1
+		})
+		localStorage.setItem("cartData", JSON.stringify(cart))
+		const cartBtn = document.getElementById(`cart-menu-${menuId}`)
+		cartBtn.classList.add("disabled")
+		
+		const navCartItemCount = document.querySelector("#nav-cart small")
+		const count = JSON.parse(localStorage.getItem("cartData")).length
+		navCartItemCount.innerHTML = count
+	} else {
+		window.location.href = "signin.html"
+	}
+}
+
+function disableCartBtn(){
+	const cart = JSON.parse(localStorage.getItem("cartData"))
+	cart.forEach(item => {
+		let cartBtn = document.querySelector(`#cart-menu-${item["menu_id"]}`)
+		cartBtn.classList.add("disabled")
+	})
+}
+
+function updateCartCount(){
+	const navCartItemCount = document.querySelector("#nav-cart small")
+	const count = JSON.parse(localStorage.getItem("cartData")).length
+	console.log(count)
+	if (count > 0){
+		navCartItemCount.innerHTML = count
+	} else {
+		navCartItemCount.parentElement.style.display = 'none'
 	}
 }
 
@@ -390,6 +421,7 @@ function signin(e) {
         })
         .then((jsonResponse) => {
                 localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
+				localStorage.setItem("cartData", JSON.stringify([]))
                 statusBox.innerHTML = null
 				// location.reload()
                 window.location.href = 'http://127.0.0.1:5500/index.html'
