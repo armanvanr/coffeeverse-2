@@ -325,13 +325,13 @@ async function fetchAllMenu() {
             for (let category in jsonResponse["data"]) {
                 const cards = jsonResponse["data"][`${category}`].map((menu) => {
                     return `<div class="col-md-4 text-center">
-								<div class="menu-wrap">
+								<div class="menu-wrap" id="wrapper-${menu.id}">
 									<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url});"></a>
 									<div class="text">
 										<h3><a href="#">${menu.name}</a></h3>
 										<p class="desc pt-1">${menu.desc}</p>
 										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-										<p><a class="btn btn-primary btn-outline-primary" name="${menu.id}" id="cart-menu-${menu.id}" onclick="addItemToCart(name)">Add to cart</a></p>
+										<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id})">Add to cart</a></p>
 									</div>
 								</div>
 							</div>`
@@ -357,9 +357,17 @@ async function fetchAllMenu() {
 
 function addItemToCart(menuId){
 	if (localStorage.length > 0){
+		const menuName = document.querySelector(`#wrapper-${menuId} .text h3 a`).innerHTML
+		const menuImg = document.querySelector(`#wrapper-${menuId} a`).style.backgroundImage.split('"')[1]
+		const menuDesc = document.querySelector(`#wrapper-${menuId} .text .desc`).innerHTML
+		const menuPrice = document.querySelector(`#wrapper-${menuId} .price span`).innerHTML.slice(2).replace(',','')
 		const cart = JSON.parse(localStorage.getItem("cartData"))
 		cart.push({
-			menu_id : menuId,
+			menuId : menuId,
+			menuName: menuName,
+			menuImg: menuImg,
+			menuDesc: menuDesc,
+			menuPrice: parseInt(menuPrice),
 			qty: 1
 		})
 		localStorage.setItem("cartData", JSON.stringify(cart))
@@ -377,21 +385,136 @@ function addItemToCart(menuId){
 function disableCartBtn(){
 	const cart = JSON.parse(localStorage.getItem("cartData"))
 	cart.forEach(item => {
-		let cartBtn = document.querySelector(`#cart-menu-${item["menu_id"]}`)
+		let cartBtn = document.getElementById(`cart-menu-${item["menuId"]}`)
 		cartBtn.classList.add("disabled")
 	})
 }
 
 function updateCartCount(){
 	const navCartItemCount = document.querySelector("#nav-cart small")
-	const count = JSON.parse(localStorage.getItem("cartData")).length
-	console.log(count)
+	
+	const cartData = JSON.parse(localStorage.getItem("cartData"))
+	const count = cartData.reduce((n, {qty}) => n + qty, 0)
 	if (count > 0){
 		navCartItemCount.innerHTML = count
 	} else {
 		navCartItemCount.parentElement.style.display = 'none'
 	}
 }
+
+//Show Cart Items
+if (window.location.href.match('http://127.0.0.1:5500/cart.html') != null){
+	window.addEventListener("load", showCartItems)
+}
+
+function showCartItems(){
+	const cartItems = JSON.parse(localStorage.getItem("cartData"))
+	const cartTableRows = document.querySelector('.cart-list tbody')
+	if (cartItems){
+		const itemRows = cartItems.map((item) => {
+			return `<tr class="text-center" id="menu-${item.menuId}">
+						<td class="product-remove"><a href="#"><span class="icon-close"></span></a></td>
+				
+						<td class="image-prod"><div class="img" style="background-image:url(${item.menuImg}); background-position: bottom"></div></td>
+				
+						<td class="product-name">
+							<h3>${item.menuName}</h3>
+							<p>${item.menuDesc}</p>
+						</td>
+				
+						<td class="price">Rp${item.menuPrice.toLocaleString()}</td>
+							
+						<td class="quantity">
+							<div class="input-group d-flex mb-3">
+								<span class="input-group-btn mr-2">
+									<button type="button" class="quantity-left-minus btn" data-type="minus" data-field="" onclick="minusQty(event,${item.menuPrice}, ${item.menuId})">
+										<i class="icon-minus"></i>
+									</button>
+								</span>
+								<input type="text" name="quantity" class="form-control input-number" value="${item.qty}" min="1" max="100" disabled>
+								<span class="input-group-btn ml-2">
+									<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="" onclick="plusQty(event,${item.menuPrice}, ${item.menuId})">
+										<i class="icon-plus"></i>
+									</button>
+								</span>
+							</div>
+						</td>
+				
+						<td class="total">${item.menuPrice}</td>
+					</tr>`
+		})
+		cartTableRows.innerHTML = itemRows.join("")
+	}
+}
+
+function plusQty(e, price, id){
+	e.preventDefault()
+	let quantity = document.querySelector(`#menu-${id} .input-number`)
+	let total = document.querySelector(`#menu-${id} .total`)
+	let cartItems = JSON.parse(localStorage.getItem("cartData"))
+	const idx = cartItems.findIndex((item) => item.menuId === id)
+	const item = cartItems[idx]
+	if (parseInt(quantity.value) < 100){
+		quantity.value = parseInt(quantity.value) + 1
+		total.innerHTML = parseInt(quantity.value)*price
+		item.qty = parseInt(quantity.value)
+		cartItems[idx] = item
+		localStorage.setItem('cartData', JSON.stringify(cartItems))
+		updateCartCount()
+	}
+}
+
+function minusQty(e, price, id){
+	e.preventDefault()
+	let quantity = document.querySelector(`#menu-${id} .input-number`)
+	let total = document.querySelector(`#menu-${id} .total`)
+	let cartItems = JSON.parse(localStorage.getItem("cartData"))
+	const idx = cartItems.findIndex((item) => item.menuId === id)
+	const item = cartItems[idx]
+	if (parseInt(quantity.value) > 1){
+		quantity.value = parseInt(quantity.value) - 1
+		total.innerHTML = parseInt(quantity.value)*price
+		item.qty = parseInt(quantity.value)
+		cartItems[idx] = item
+		localStorage.setItem('cartData', JSON.stringify(cartItems))
+		updateCartCount()
+	}
+}
+
+// $(document).ready(function () {
+
+// 	let quantity = 0;
+// 	$('.quantity-right-plus').click(function (e) {
+
+// 		// Stop acting like a button
+// 		e.preventDefault();
+// 		// Get the field name
+// 		let quantity = parseInt($('#quantity').val());
+
+// 		// If is not undefined
+
+// 		$('#quantity').val(quantity + 1);
+
+
+// 		// Increment
+
+// 	});
+
+// 	$('.quantity-left-minus').click(function (e) {
+// 		// Stop acting like a button
+// 		e.preventDefault();
+// 		// Get the field name
+// 		let quantity = parseInt($('#quantity').val());
+
+// 		// If is not undefined
+
+// 		// Increment
+// 		if (quantity > 0) {
+// 			$('#quantity').val(quantity - 1);
+// 		}
+// 	});
+
+// });
 
 //Sign In
 if (window.location.href.match('http://127.0.0.1:5500/signin.html') != null){
