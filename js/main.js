@@ -563,8 +563,12 @@ async function signup(e) {
                     el.value = ""
                 }
 				setTimeout(()=> {
-					statusBox.innerHTML = `Redirected to Sign in Page in 3 seconds`
-					setTimeout(() => window.location.href = "signin.html", 3000)}, 1500)
+					let sec = 3
+					setInterval(()=> {
+						statusBox.innerHTML = `Redirected to Sign in Page in ${sec} second(s)`
+						sec-=1
+					}, 1000)
+					setTimeout(() => window.location.href = "signin.html", 4000)}, 1000)
 				
             } else {
                 throw await response.json()
