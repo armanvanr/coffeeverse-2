@@ -377,6 +377,7 @@ function addItemToCart(menuId){
 		const navCartItemCount = document.querySelector("#nav-cart small")
 		const count = JSON.parse(localStorage.getItem("cartData")).length
 		navCartItemCount.innerHTML = count
+		updateCartCount()
 	} else {
 		window.location.href = "signin.html"
 	}
@@ -394,11 +395,10 @@ function updateCartCount(){
 	const navCartItemCount = document.querySelector("#nav-cart small")
 	
 	const cartData = JSON.parse(localStorage.getItem("cartData"))
-	const count = cartData.reduce((n, {qty}) => n + qty, 0)
-	if (count > 0){
+	if (cartData.length > 0){
+		const count = cartData.reduce((n, {qty}) => n + qty, 0)
 		navCartItemCount.innerHTML = count
-	} else {
-		navCartItemCount.parentElement.style.display = 'none'
+		navCartItemCount.parentElement.style.visibility = 'visible'
 	}
 }
 
@@ -481,41 +481,6 @@ function minusQty(e, price, id){
 	}
 }
 
-// $(document).ready(function () {
-
-// 	let quantity = 0;
-// 	$('.quantity-right-plus').click(function (e) {
-
-// 		// Stop acting like a button
-// 		e.preventDefault();
-// 		// Get the field name
-// 		let quantity = parseInt($('#quantity').val());
-
-// 		// If is not undefined
-
-// 		$('#quantity').val(quantity + 1);
-
-
-// 		// Increment
-
-// 	});
-
-// 	$('.quantity-left-minus').click(function (e) {
-// 		// Stop acting like a button
-// 		e.preventDefault();
-// 		// Get the field name
-// 		let quantity = parseInt($('#quantity').val());
-
-// 		// If is not undefined
-
-// 		// Increment
-// 		if (quantity > 0) {
-// 			$('#quantity').val(quantity - 1);
-// 		}
-// 	});
-
-// });
-
 //Sign In
 if (window.location.href.match('http://127.0.0.1:5500/signin.html') != null){
 	let formSubmit = document.getElementById("btn-sign-in")
@@ -543,8 +508,9 @@ function signin(e) {
             }
         })
         .then((jsonResponse) => {
+				console.log(jsonResponse["data"]["cart"])
                 localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
-				localStorage.setItem("cartData", JSON.stringify([]))
+				localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]["cart"]))
                 statusBox.innerHTML = null
 				// location.reload()
                 window.location.href = 'http://127.0.0.1:5500/index.html'
@@ -596,6 +562,10 @@ async function signup(e) {
                 for (let el of inputFields) {
                     el.value = ""
                 }
+				setTimeout(()=> {
+					statusBox.innerHTML = `Redirected to Sign in Page in 3 seconds`
+					setTimeout(() => window.location.href = "signin.html", 3000)}, 1500)
+				
             } else {
                 throw await response.json()
             }
@@ -614,6 +584,18 @@ let signOutBtn = document.getElementById('nav-sign-out')
 signOutBtn.addEventListener('click', signout)
 function signout(e){
 	e.preventDefault()
-	localStorage.clear()
-	location.reload()
+	const logoutData = {cartData: JSON.parse(localStorage.getItem("cartData")), userData: JSON.parse(localStorage.getItem("userData"))}
+	console.log(logoutData)
+	fetch('http://127.0.0.1:5000/user/logout', {
+		method: "PUT",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({cartData: JSON.parse(localStorage.getItem("cartData")), userData: JSON.parse(localStorage.getItem("userData"))})
+	})
+	.then((response) => {
+		localStorage.clear()
+		window.location.href = "index.html"
+	})
+	.catch((err)=>{
+		console.error(err.message)
+	})
 }
