@@ -143,23 +143,23 @@
     					<h3>Cart Totals</h3>
     					<p class="d-flex">
     						<span>Subtotal</span>
-    						<span>$20.60</span>
+    						<span id="subTotal">$20.60</span>
     					</p>
     					<p class="d-flex">
-    						<span>Delivery</span>
-    						<span>$0.00</span>
-    					</p>
-    					<p class="d-flex">
-    						<span>Discount</span>
-    						<span>$3.00</span>
+                <span>Discount</span>
+    						<span id="discount">$3.00</span>
     					</p>
     					<hr>
     					<p class="d-flex total-price">
-    						<span>Total</span>
-    						<span>$17.60</span>
+                <span>Total</span>
+    						<span id="totalBill">$17.60</span>
     					</p>
+              <p class="d-flex">
+                <span>Balance</span>
+                <span id="balance">$0.00</span>
+              </p>
     				</div>
-    				<p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+    				<p class="text-center"><a href="" class="btn btn-primary py-3 px-4" onclick="createOrder(event)">Create Order</a></p>
     			</div>
     		</div>
 			</div>
