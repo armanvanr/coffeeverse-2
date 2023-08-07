@@ -444,6 +444,7 @@ function showCartItems(){
 					</tr>`
 		})
 		cartTableRows.innerHTML = itemRows.join("")
+		billSum()
 	}
 }
 
@@ -461,6 +462,7 @@ function plusQty(e, price, id){
 		cartItems[idx] = item
 		localStorage.setItem('cartData', JSON.stringify(cartItems))
 		updateCartCount()
+		billSum()
 	}
 }
 
@@ -478,7 +480,51 @@ function minusQty(e, price, id){
 		cartItems[idx] = item
 		localStorage.setItem('cartData', JSON.stringify(cartItems))
 		updateCartCount()
+		billSum()
 	}
+}
+
+//Sum up the bill
+function billSum(){
+	const cartItems = JSON.parse(localStorage.getItem("cartData"))
+	const balance = JSON.parse(localStorage.getItem("userData"))["balance"]
+	let subTotal = 0
+	const discount = 0
+	let totalBill = 0
+	for (item of cartItems){
+		subTotal += item.menuPrice * item.qty
+	}
+	totalBill = subTotal-discount
+	document.getElementById("subTotal").innerHTML = `Rp${subTotal.toLocaleString()}`
+	document.getElementById("discount").innerHTML = `Rp${discount.toLocaleString()}`
+	document.getElementById("totalBill").innerHTML = `Rp${totalBill.toLocaleString()}`
+	document.getElementById("balance").innerHTML = `Rp${balance.toLocaleString()}`
+}
+
+//Create Order
+function createOrder(event){
+	event.preventDefault()
+	const cartItems = JSON.parse(localStorage.getItem("cartData"))
+	const userData = JSON.parse(localStorage.getItem("userData"))
+	let data = []
+	for (item of cartItems){
+		data.push({menu_id :item.menuId, quantity: item.qty})
+	}
+	fetch('http://127.0.0.1:5000/order/create', {
+		method: "POST",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({order_items : data, user_data: userData})
+	})
+	.then((response) => response.json())
+	.then((jsonResponse) => {
+		//clear cartData in localstorage
+		localStorage.setItem("cartData", JSON.stringify([]))
+		
+		//show success modal: OK button and 'see order detail' button
+
+		//redirect to 
+	})
+	.catch((err) => console.error(err.message))
 }
 
 //Sign In
