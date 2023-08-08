@@ -4404,7 +4404,7 @@ button.close {
   flex-direction: column;
   width: 100%;
   pointer-events: auto;
-  background-color: #fff;
+  background-color: #1E1B1B;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
@@ -8097,7 +8097,37 @@ h1, h2, h3, h4, h5,
 .cart-list {
   overflow-x: scroll; }
 
+.modal-success .modal-header{
+  border-bottom: none;
+  position: relative;
+	text-align: center;
+  padding: 15px;
+}
 
+.modal-success .close{
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.modal-success .icon-box{
+  padding: 20px;
+  border-radius: 50%;
+  border: 2px solid #c49b5d;
+}
+
+.modal-success .icon-box div{
+  color: #c49b5d;
+  font-size: 60px;
+}
+
+.modal-success .modal-body{
+  color: #fff;
+}
+
+.modal-success .modal-footer{
+  border-top: none;
+}
 
 .table {
   min-width: 1000px !important;
@@ -8765,10 +8795,6 @@ textarea.form-control {
 }
 
 #all-foods-container .img {
-  background-position: center;
-}
-
-#menu-search-container .img {
   background-position: center;
 }
 
