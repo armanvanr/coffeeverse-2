@@ -243,7 +243,31 @@
       </div>
     </footer>
     
-  
+    <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderStatus" id="orderSuccessBtn"></button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="orderStatus" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-success" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center align-items-center">
+          <div class="icon-box">
+            <div class="icon-check"></div>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          Order successfully created!
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+          <button type="button" class="btn btn-primary">See order details</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- loader -->
   <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
@@ -266,6 +290,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
   <script src="js/google-map.js"></script>
   <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     
   </body>
