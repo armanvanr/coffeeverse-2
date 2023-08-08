@@ -8768,6 +8768,10 @@ textarea.form-control {
   background-position: center;
 }
 
+#menu-search-container .img {
+  background-position: center;
+}
+
 @media (max-width: 767.98px) {
   .img-about {
     height: 400px;

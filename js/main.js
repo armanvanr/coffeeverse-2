@@ -355,6 +355,44 @@ async function fetchAllMenu() {
     }
 }
 
+async function searchMenu(event){
+	event.preventDefault()
+	let searchResultContainer = document.getElementById("menu-search-container")
+	const searchValue = document.getElementById("search-field").value
+	try {
+        const response = await fetch('http://127.0.0.1:5000/menu/search?'+ new URLSearchParams({name:searchValue}), {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        if (response.ok) {
+            const jsonResponse = await response.json()
+            const cards = jsonResponse["data"]["results"].map((menu) => {
+            	return `<div class="col-md-4 text-center">
+							<div class="menu-wrap" id="wrapper-${menu.id}">
+								<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url});"></a>
+								<div class="text">
+									<h3><a href="#">${menu.name}</a></h3>
+									<p class="desc pt-1">${menu.desc}</p>
+									<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
+									<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id})">Add to cart</a></p>
+								</div>
+							</div>
+						</div>`
+                })
+		    searchResultContainer.innerHTML = cards.join('<br/>')
+			//persist disabled state of cart button each time the menu page has finished fetching data
+			if (localStorage.length > 0){
+				disableCartBtn()
+				updateCartCount()
+			}
+        } else {
+            throw await response.json()
+        }
+    } catch (err) {
+        console.error(err.message)
+    }
+}
+
 function addItemToCart(menuId){
 	if (localStorage.length > 0){
 		const menuName = document.querySelector(`#wrapper-${menuId} .text h3 a`).innerHTML
@@ -554,12 +592,15 @@ function signin(e) {
             }
         })
         .then((jsonResponse) => {
-				console.log(jsonResponse["data"]["cart"])
                 localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
 				localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]["cart"]))
-                statusBox.innerHTML = null
-				// location.reload()
-                window.location.href = 'http://127.0.0.1:5500/index.html'
+                if (jsonResponse.data.role === 'admin'){
+					console.info('to admin page')
+					window.location.href = 'http://127.0.0.1:5500/index.html'
+					// window.location.href = 'http://127.0.0.1:5500/admin/index.html'
+				} else if (jsonResponse.data.role === 'member'){
+					window.location.href = 'http://127.0.0.1:5500/index.html'
+				}
         })
         .catch((error) => {
             statusBox.style.color = "#ff3f3f"
@@ -634,8 +675,6 @@ let signOutBtn = document.getElementById('nav-sign-out')
 signOutBtn.addEventListener('click', signout)
 function signout(e){
 	e.preventDefault()
-	const logoutData = {cartData: JSON.parse(localStorage.getItem("cartData")), userData: JSON.parse(localStorage.getItem("userData"))}
-	console.log(logoutData)
 	fetch('http://127.0.0.1:5000/user/logout', {
 		method: "PUT",
 		headers: { "Content-type": "application/json; charset=UTF-8" },
