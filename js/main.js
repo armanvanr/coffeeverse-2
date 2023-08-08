@@ -344,7 +344,7 @@ async function fetchAllMenu() {
             }
 			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
-				disableCartBtn()
+				// disableCartBtn()
 				updateCartCount()
 			}
         } else {
@@ -360,7 +360,7 @@ async function searchMenu(event){
 	let searchResultContainer = document.getElementById("menu-search-container")
 	const searchValue = document.getElementById("search-field").value
 	try {
-        const response = await fetch('http://127.0.0.1:5000/menu/search?'+ new URLSearchParams({name:searchValue}), {
+        const response = await fetch('http://127.0.0.1:5000/menu/search?'+ new URLSearchParams({keyword:searchValue}), {
             method: "GET",
             headers: { "Content-type": "application/json; charset=UTF-8" }
         })
@@ -369,7 +369,7 @@ async function searchMenu(event){
             const cards = jsonResponse["data"]["results"].map((menu) => {
             	return `<div class="col-md-4 text-center">
 							<div class="menu-wrap" id="wrapper-${menu.id}">
-								<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url});"></a>
+								<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url}); background-position: ${menu.category === 'drinks'? 'bottom':'center'}"></a>
 								<div class="text">
 									<h3><a href="#">${menu.name}</a></h3>
 									<p class="desc pt-1">${menu.desc}</p>
@@ -400,17 +400,22 @@ function addItemToCart(menuId){
 		const menuDesc = document.querySelector(`#wrapper-${menuId} .text .desc`).innerHTML
 		const menuPrice = document.querySelector(`#wrapper-${menuId} .price span`).innerHTML.slice(2).replace(',','')
 		const cart = JSON.parse(localStorage.getItem("cartData"))
-		cart.push({
-			menuId : menuId,
-			menuName: menuName,
-			menuImg: menuImg,
-			menuDesc: menuDesc,
-			menuPrice: parseInt(menuPrice),
-			qty: 1
-		})
+		addedItem = cart.find(item => item.menuId === menuId)
+		if (addedItem){
+			addedItem.qty += 1
+		} else {
+			cart.push({
+				menuId : menuId,
+				menuName: menuName,
+				menuImg: menuImg,
+				menuDesc: menuDesc,
+				menuPrice: parseInt(menuPrice),
+				qty: 1
+			})
+		}
 		localStorage.setItem("cartData", JSON.stringify(cart))
-		const cartBtn = document.getElementById(`cart-menu-${menuId}`)
-		cartBtn.classList.add("disabled")
+		// const cartBtn = document.getElementById(`cart-menu-${menuId}`)
+		// cartBtn.classList.add("disabled")
 		
 		const navCartItemCount = document.querySelector("#nav-cart small")
 		const count = JSON.parse(localStorage.getItem("cartData")).length
@@ -556,11 +561,32 @@ function createOrder(event){
 	.then((response) => response.json())
 	.then((jsonResponse) => {
 		//clear cartData in localstorage
-		localStorage.setItem("cartData", JSON.stringify([]))
+		console.log(jsonResponse)
+		// localStorage.setItem("cartData", JSON.stringify([]))
 		
 		//show success modal: OK button and 'see order detail' button
-
-		//redirect to 
+		Swal.fire({
+			icon: "success",
+			title: "Order Successfully Received!",
+			text: `${jsonResponse["message"]}`,
+			background: "#1E1B1B",
+			color: "#fff",
+			showCloseButton: true,
+			showDenyButton: true,
+			confirmButtonColor: "#c49b5d",
+			denyButtonColor: "#525253",
+			confirmButtonText: "See Order Details",
+			denyButtonText: "Create New Order",
+		})
+		.then((result) => {
+			if (result.isConfirmed) {
+				window.location.href = "index.html"
+			} else if (result.isDenied) {
+				window.location.href = "menu.html"
+			} else {
+				window.location.href = "index.html"
+			}
+		})
 	})
 	.catch((err) => console.error(err.message))
 }
