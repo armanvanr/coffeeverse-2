@@ -307,6 +307,44 @@ if (localStorage.length > 0){
 	document.getElementById('nav-cart').style.display = 'none'
 }
 
+//Top 5 Coffee
+if (window.location.href.match('http://127.0.0.1:5500/index.html') != null){
+	window.addEventListener("load", getTopMenu)
+}
+async function getTopMenu() {
+	const bestSellerContainer = document.getElementById("best-seller-container")
+	try {
+        const response = await fetch('http://127.0.0.1:5000/menu/top5', {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        if (response.ok) {
+            const jsonResponse = await response.json()
+            const cards = jsonResponse["data"]["drinks"].map((menu) => {
+                return `<div class="col-md-4">
+        					<div class="menu-entry menu-card-${menu.id}">
+    							<a href="#" class="img" style="background-image: url(${menu.img_url});"></a>
+    							<div class="text text-center pt-4">
+    								<h3><a href="#">${menu.name}</a></h3>
+    								<p class="desc">${menu.desc}</p>
+    								<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
+    								<p><a href="#" class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id}, event)">Add to Cart</a></p>
+    							</div>
+    						</div>
+        				</div>`
+            	})
+            bestSellerContainer.innerHTML = cards.join('<br/>')
+			//persist disabled state of cart button each time the menu page has finished fetching data
+			if (localStorage.length > 0){
+				updateCartCount()
+			}
+        } else {
+            throw await response.json()
+        }
+    } catch (err) {
+        console.error(err.message)
+    }
+}
 
 //Show All Menu Items
 if (window.location.href.match('http://127.0.0.1:5500/menu.html') != null){
@@ -325,13 +363,13 @@ async function fetchAllMenu() {
             for (let category in jsonResponse["data"]) {
                 const cards = jsonResponse["data"][`${category}`].map((menu) => {
                     return `<div class="col-md-4 text-center">
-								<div class="menu-wrap" id="wrapper-${menu.id}">
+								<div class="menu-wrap menu-card-${menu.id}">
 									<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url});"></a>
 									<div class="text">
 										<h3><a href="#">${menu.name}</a></h3>
 										<p class="desc pt-1">${menu.desc}</p>
 										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-										<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id})">Add to cart</a></p>
+										<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id}, event)">Add to cart</a></p>
 									</div>
 								</div>
 							</div>`
@@ -374,7 +412,7 @@ async function searchMenu(event){
 									<h3><a href="#">${menu.name}</a></h3>
 									<p class="desc pt-1">${menu.desc}</p>
 									<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-									<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id})">Add to cart</a></p>
+									<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id}, event)">Add to cart</a></p>
 								</div>
 							</div>
 						</div>`
@@ -382,7 +420,7 @@ async function searchMenu(event){
 		    searchResultContainer.innerHTML = cards.join('<br/>')
 			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
-				disableCartBtn()
+				// disableCartBtn()
 				updateCartCount()
 			}
         } else {
@@ -393,12 +431,14 @@ async function searchMenu(event){
     }
 }
 
-function addItemToCart(menuId){
+function addItemToCart(menuId, event){
+	event.preventDefault()
 	if (localStorage.length > 0){
-		const menuName = document.querySelector(`#wrapper-${menuId} .text h3 a`).innerHTML
-		const menuImg = document.querySelector(`#wrapper-${menuId} a`).style.backgroundImage.split('"')[1]
-		const menuDesc = document.querySelector(`#wrapper-${menuId} .text .desc`).innerHTML
-		const menuPrice = document.querySelector(`#wrapper-${menuId} .price span`).innerHTML.slice(2).replace(',','')
+		const menuName = document.querySelector(`.menu-card-${menuId} .text h3 a`).innerHTML
+		const menuImg = document.querySelector(`.menu-card-${menuId} a`).style.backgroundImage.split('"')[1]
+		const menuDesc = document.querySelector(`.menu-card-${menuId} .text .desc`).innerHTML
+		const menuPrice = document.querySelector(`.menu-card-${menuId} .price span`).innerHTML.slice(2).replace(',','')
+		console.log(menuName, menuImg, menuDesc, menuPrice)
 		const cart = JSON.parse(localStorage.getItem("cartData"))
 		addedItem = cart.find(item => item.menuId === menuId)
 		if (addedItem){
