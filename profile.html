@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Coffeeverse - User Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+
+    <link rel="stylesheet" href="css/aos.css">
+
+    <link rel="stylesheet" href="css/ionicons.min.css">
+
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="css/jquery.timepicker.css">
+
+
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="displayUserData()">
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+	      <a class="navbar-brand" href="index.html">Coffee<small>verse</small></a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span> Menu
+	      </button>
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav ml-auto">
+	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+	          <li class="nav-item"><a href="menu.html" class="nav-link">Menu</a></li>
+	          <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+	          <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
+	          <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+			  <li class="nav-item" id="nav-sign-in"><a href="signin.html" class="nav-link">Sign In</a></li>
+	          <li class="nav-item dropdown" id="nav-dropdown">
+              	<a class="nav-link dropdown-toggle" href="menu.html" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-person_outline"></span></a>
+              	<div class="dropdown-menu" aria-labelledby="dropdown04">
+              		<a class="dropdown-item" href="profile.html">Profile</a>
+                	<a class="dropdown-item" id="nav-sign-out" href="">Sign Out</a>
+              	</div>
+              </li>
+	          <li class="nav-item cart" id="nav-cart"><a href="cart.html" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small></small></span></a></li>
+	        </ul>
+	      </div>
+		  </div>
+	  </nav>
+    <!-- END nav -->
+
+    <section class="ftco-about d-md-flex" id="main-profile">
+        <div class="sidebar">
+            <div class="upper-sidebar text-center">
+                <div class="user-name"></div>
+                <div class="balance-group d-flex justify-content-center align-items-center">
+                    <div class="balance-text">Balance</div>
+                    <div class="balance-badge" id="user-balance-text"></div>
+                </div>
+            </div>
+            <div class="lower-sidebar d-flex flex-column align-items-start">
+                <div class="sidebar-nav account"><a href="profile.html"><span class="icon-user"></span>Account</a></div>
+                <div class="sidebar-nav order-list"><a href="orders.html"><span class="icon-event_note"></span>My Orders</a></div>
+                <div class="sidebar-nav wallet"><a href="ewallet.html"><span class="icon-account_balance_wallet"></span>E-Wallet</a></div>
+            </div>
+        </div>
+        <div class="profile-content">
+            <h2>Customer Profile</h2>
+            <hr/>
+            <div class="user-data">
+                <div class="user-name-group">
+                    <div class="form-label">Name</div>
+                    <div id="user-name-text"></div>
+                    <input type="text" id="user-name-input" style="display: none;">
+                </div>
+                <div class="user-email-group">
+                    <div class="form-label">Email</div>
+                    <div id="user-email-text"></div>
+                </div>
+            </div>
+            <div class="profile-btn-group">
+                <a href="" class="btn btn-primary" id="data-change" onclick="changeToggle(event)">Change User Data</a>
+                <a href="" class="btn btn-primary" id="data-save" onclick="saveToggle(event)" style="display: none;">Save Data Change</a>
+                <a href="" class="btn btn-primary" class="password-change">Change Password</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00" />
+        </svg>
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/jquery.timepicker.min.js"></script>
+    <script src="js/scrollax.min.js"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+    <script src="js/google-map.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</body>
+</html>

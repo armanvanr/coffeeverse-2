@@ -596,6 +596,7 @@ if (window.location.href.match('http://127.0.0.1:5500/signin.html') != null){
 	let formSubmit = document.getElementById("btn-sign-in")
 	formSubmit.addEventListener("click", signin)
 }
+
 function signin(e) {
     e.preventDefault()
     let email = document.getElementById("sign-in-email").value
@@ -700,6 +701,7 @@ async function signup(e) {
 let signOutBtn = document.getElementById('nav-sign-out')
 signOutBtn.addEventListener('click', signout)
 function signout(e){
+	console.log('out')
 	e.preventDefault()
 	fetch('http://127.0.0.1:5000/user/logout', {
 		method: "PUT",
@@ -712,5 +714,66 @@ function signout(e){
 	})
 	.catch((err)=>{
 		console.error(err.message)
+	})
+}
+
+//Profile
+if (window.location.href.match('http://127.0.0.1:5500/signup.html') != null){
+	displayUserData(e)
+}
+
+const changeToggleBtn = document.getElementById("data-change")
+const saveToggleBtn = document.getElementById("data-save")
+const usernameInput = document.getElementById("user-name-input")
+const userNameText = document.getElementById("user-name-text")
+const userEmailText = document.getElementById("user-email-text")
+const userBalanceText = document.getElementById("user-balance-text")
+const usernameSidebar = document.querySelector(".sidebar .user-name")
+
+function displayUserData(){
+	const userData = JSON.parse(localStorage.getItem('userData'))
+	usernameSidebar.innerHTML = userData["name"]
+	usernameInput.value = userData["name"]
+	userNameText.innerHTML = userData["name"]
+	userEmailText.innerHTML = userData["email"]
+	userBalanceText.innerHTML = `Rp${userData["balance"].toLocaleString()}`
+}
+
+function changeToggle(e){
+	e.preventDefault()
+	saveToggleBtn.style.display = 'inline-block'
+	changeToggleBtn.style.display = 'none'
+	usernameInput.style.display = 'inline-block'
+	userNameText.style.display = 'none'
+}
+
+function saveToggle(e){
+	e.preventDefault()
+	const userData = JSON.parse(localStorage.getItem('userData'))
+	fetch('http://127.0.0.1:5000/user/update', {
+		method: "PUT",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({name: usernameInput.value, email: userData["email"]})
+	})
+	.then((response) => response.json())
+	.then((jsonResponse) => {
+		Swal.fire({
+			icon: "success",
+			title: "User Data Successfully Changed",
+			background: "#1E1B1B",
+			color: "#fff",
+			showCloseButton: true,
+			confirmButtonColor: "#c49b5d",
+			confirmButtonText: "OK",
+		})
+		.then((response) => {
+			userData["name"] = usernameInput.value
+			localStorage.setItem("userData", JSON.stringify(userData))
+			saveToggleBtn.style.display = 'none'
+			changeToggleBtn.style.display = 'inline-block'
+			usernameInput.style.display = 'none'
+			userNameText.style.display = 'inline-block'
+			window.location.reload()
+		})
 	})
 }

@@ -7843,6 +7843,120 @@ h1, h2, h3, h4, h5,
   height: 100vh;
 }
 
+#main-profile {
+  background-color: #120F0F;
+  margin-top: 91px;
+  height: 86vh;
+  padding: 35px;
+}
+
+.sidebar {
+  flex: 0.25;
+  padding: 0 40px 40px 40px;
+}
+
+.upper-sidebar{
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: gray;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.upper-sidebar .user-name{
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.balance-group {
+  gap: 20px;
+}
+
+.balance-group .balance-text {
+  color: lightgray;
+  font-weight: 600;
+}
+
+.balance-group .balance-badge {
+  padding: 3px 15px;
+  color: #000;
+  background-color: #fff;
+  border-radius: 75px;
+  width: 130px
+}
+
+.lower-sidebar{
+  padding: 30px 30px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: gray;
+  color: #fff;
+  gap: 20px;
+}
+
+.lower-sidebar .sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color:#141414;
+  font-weight: 600;
+}
+
+.lower-sidebar .sidebar-nav span{
+  text-align: center;
+  width: 30px;
+  font-size: 1.5rem;
+}
+
+.profile-content {
+  flex: 0.75;
+  padding: 25px 40px 40px 40px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+
+.user-data > div {
+  display: flex;
+  gap: 20px;
+  font-size: 1.1rem;
+  padding: 5px;
+}
+
+.form-label{
+  height: 38px;
+  width: 100px;
+  padding: auto 0;
+}
+
+.user-data #user-name-input {
+  position: relative;
+  top: -2px;
+  left: -2px;
+  color: gray;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #c49b63;
+}
+
+.user-data #user-name-input:focus {
+  outline: none;
+  color: #fff;
+}
+
+
+
+.profile-btn-group {
+  display: flex;
+  flex-direction: column;
+  width: 170px;
+  gap: 10px;
+  padding: 10px;
+  margin-top: 20px;
+}
+
 .ftco-services {
   color: #1d150b;
   background: #c49b63; }
