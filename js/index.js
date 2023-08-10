@@ -308,28 +308,63 @@ function createOrder(event){
 		//clear cartData in localstorage
 		localStorage.setItem("cartData", JSON.stringify([]))
 		
-		//show success modal: OK button and 'see order detail' button
-		Swal.fire({
+		//show success modal: OK button, 'see order detail' button, and cancel button (if waiting list)
+		let swalParams = {
 			icon: "success",
 			title: "Order Successfully Received!",
 			text: `${jsonResponse["message"]}`,
 			background: "#1E1B1B",
 			color: "#fff",
 			showCloseButton: true,
-			showDenyButton: true,
 			confirmButtonColor: "#c49b5d",
-			denyButtonColor: "#525253",
-			confirmButtonText: "See Order Details",
-			denyButtonText: "Create New Order",
-		})
+			confirmButtonText: "Create New Order",
+			focusConfirm: false,
+		}
+		if (jsonResponse["data"]["status"] === "waiting-list"){
+			swalParams = {
+				...swalParams,
+				icon: "info",
+				showCancelButton: true,
+				cancelButtonColor: "#525253",
+				cancelButtonText: "Cancel Order",
+				focusCancel: false
+			}
+		}
+		Swal.fire(swalParams)
 		.then((result) => {
 			if (result.isConfirmed) {
-				window.location.href = "index.html"
-			} else if (result.isDenied) {
 				window.location.href = "menu.html"
+			} else if (result.isDismissed) {
+				cancelOrder(jsonResponse["data"]["order_id"])
 			} else {
 				window.location.href = "index.html"
 			}
+		})
+	})
+	.catch((err) => console.error(err.message))
+}
+
+//Cancel Order
+function cancelOrder(orderId){
+	fetch(`http://127.0.0.1:5000/order/cancel/${orderId}`, {
+		method: "PUT",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({userData: JSON.parse(localStorage.getItem("userData"))})
+	})
+	.then((response) => response.json())
+	.then((jsonResponse) => {
+		Swal.fire({
+			icon: "success",
+			title: "Order Cancelled",
+			background: "#1E1B1B",
+			color: "#fff",
+			showCloseButton: true,
+			confirmButtonColor: "#c49b5d",
+			confirmButtonText: "OK",
+			focusConfirm: false,
+		})
+		.then((result) => {
+			window.location.href = "index.html"
 		})
 	})
 	.catch((err) => console.error(err.message))
@@ -445,7 +480,6 @@ async function signup(e) {
 let signOutBtn = document.getElementById('nav-sign-out')
 signOutBtn.addEventListener('click', signout)
 function signout(e){
-	console.log('out')
 	e.preventDefault()
 	fetch('http://127.0.0.1:5000/user/logout', {
 		method: "PUT",
