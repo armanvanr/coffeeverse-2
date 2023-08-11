@@ -3975,12 +3975,17 @@ textarea.form-control-lg {
   align-items:baseline;
   gap: 20px
 }
+
 .price-stock-group div {
   width: 100px;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
+}
+
+body .swal2-container {
+  z-index: 1095;
 }
 
 .card-img,
