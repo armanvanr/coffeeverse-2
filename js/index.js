@@ -60,7 +60,7 @@ async function fetchAllMenu() {
 	let drinksContainer = document.querySelector("#all-drinks-container")
 	let foodsContainer = document.querySelector("#all-foods-container")
     try {
-        const response = await fetch('http://127.0.0.1:5000/menu/all', {
+        const response = await fetch('http://127.0.0.1:5000/menu/available', {
             method: "GET",
             headers: { "Content-type": "application/json; charset=UTF-8" }
         })
