@@ -39,6 +39,45 @@ function displayAllMenu(){
     .catch((err) => console.error(err.message))
 }
 
+const addModal = document.getElementById("addModal")
+async function addMenu(e){
+    e.preventDefault()
+    const nameValue = addModal.querySelector("#nameAdd").value 
+    const categoryValue = addModal.querySelector("#categoryAdd").value 
+    const priceValue = parseInt(addModal.querySelector("#priceAdd").value )
+    const stockValue = parseInt(addModal.querySelector("#stockAdd").value )
+    const imgUrlValue = addModal.querySelector("#imgUrlAdd").value 
+    const descValue = addModal.querySelector("#descAdd").value
+    const data = {
+        name: nameValue,
+        category: categoryValue,
+        price: priceValue,
+        stock: stockValue,
+        img_url: imgUrlValue,
+        desc: descValue
+    }
+    try {
+        const response = await fetch('http://127.0.0.1:5000/menu', {
+            method: "POST",
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+            body: JSON.stringify(data)
+        })
+        const jsonResponse = await response.json()
+        
+    } catch(err) {
+        console.error(err.message)
+    }
+    
+}
+
+function resetForm(e){
+    e.preventDefault()
+    fieldList = document.querySelectorAll("#addModal input, #addModal select, #addModal textarea")
+    for (let field of fieldList){
+        field.value = ''
+    }
+}
+
 const detailsModal = document.getElementById("detailsModal")
 function getMenuDetails(menuId, e){
     e.preventDefault()
@@ -82,12 +121,12 @@ function editMenuDetails(e){
 
 function saveChanges(e){
     e.preventDefault()
-    nameValue = editModal.querySelector("#nameEdit").value 
-    categoryValue = editModal.querySelector("#categoryEdit").value 
-    priceValue = parseInt(editModal.querySelector("#priceEdit").value )
-    stockValue = parseInt(editModal.querySelector("#stockEdit").value )
-    imgUrlValue = editModal.querySelector("#imgUrlEdit").value 
-    descValue = editModal.querySelector("#descEdit").value
+    const nameValue = editModal.querySelector("#nameEdit").value 
+    const categoryValue = editModal.querySelector("#categoryEdit").value 
+    const priceValue = parseInt(editModal.querySelector("#priceEdit").value )
+    const stockValue = parseInt(editModal.querySelector("#stockEdit").value )
+    const imgUrlValue = editModal.querySelector("#imgUrlEdit").value 
+    const descValue = editModal.querySelector("#descEdit").value
     const data = {
         name: nameValue,
         category: categoryValue,

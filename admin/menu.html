@@ -206,129 +206,18 @@
             </div>
           </nav>
 
-          <!-- / Details Modal -->
-          <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="card h-100">
-                    <img class="card-img-top" src="" alt="Card image cap" />
-                    <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                    ></button>
-                  <div class="card-body">
-                    <div class="card-title">
-                      <h5></h5>
-                      <a href="" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editMenuDetails(event)"><i class="bx bx-edit-alt mx-1"></i>Edit data</a>
-                    </div>
-                    <p class="card-text"></p>
-                    <div class="price-stock-group">
-                      <div class="menu-price">
-                        <i class="bx bx-dollar-circle"></i>
-                        <div class="price-text"></div>
-                      </div>
-                      <div class="menu-stock-">
-                        <i class="bx bx-coin-stack"></i>
-                        <div class="stock-text"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Edit Form Modal -->
-          <div class="modal fade" id="editModal" data-bs-backdrop="static" tabindex="-1">
-            <div class="modal-dialog">
-              <form class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="backDropModalTitle">Edit Menu Data</h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row g-3 mb-3">
-                    <div class="col">
-                      <label for="nameEdit" class="form-label">Name</label>
-                      <input
-                        type="text"
-                        id="nameEdit"
-                        class="form-control"
-                        value=""
-                      />
-                    </div>
-                    <div class="col">
-                      <label for="categoryEdit" class="form-label">Category</label>
-                      <select class="form-select" id="categoryEdit" aria-label="Menu category select">
-                        <option value="drinks">Drinks</option>
-                        <option value="foods">Foods</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row g-3 mb-3">
-                    <div class="col">
-                      <label for="priceEdit" class="form-label">Price</label>
-                      <input
-                        type="number"
-                        id="priceEdit"
-                        min="0"
-                        max="30000"
-                        class="form-control"
-                      />
-                    </div>
-                    <div class="col">
-                      <label for="stockEdit" class="form-label">Stock</label>
-                      <input
-                        type="number"
-                        id="stockEdit"
-                        min="1"
-                        max="100"
-                        class="form-control"
-                        placeholder="Stock"
-                      />
-                    </div>
-                  </div>
-                  <div class="row g-3 mb-3">
-                    <div class="col">
-                      <label for="imgUrlEdit" class="form-label">Image URL</label>
-                      <input
-                        type="text"
-                        id="imgUrlEdit"
-                        class="form-control"
-                      />
-                    </div>
-                  </div>
-                  <div class="row g-3">
-                    <div class="col mb-0">
-                      <label for="descEdit" class="form-label">Description</label>
-                      <textarea class="form-control" id="descEdit" rows="3"></textarea>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#detailsModal">
-                    Cancel
-                  </button>
-                  <button type="button" class="btn btn-primary" onclick="saveChanges(event)">Save changes</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="card">
-                <h5 class="card-header">All Menu Items</h5>
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5>All Menu Items</h5>
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <span class="tf-icons bx bx-plus"></span>&nbsp; Add New Menu
+                  </button>
+                </div>
                 <div class="table-responsive text-nowrap">
                   <table class="table table-hover">
                     <thead>
@@ -340,92 +229,7 @@
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody class="table-border-bottom-0">
-                      <!-- <tr>
-                        <td><strong>Color Sprinkles Doughnut</strong></td>
-                        <td>Albert Cook</td>
-                        <td>10</td>
-                        <td><span class="badge bg-label-warning me-1">Drinks</span></td>
-                        <td>
-                          <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#detailsModal"
-                                ><i class="bx bx-info-circle mx-1"></i>Details</a
-                              >
-                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                ><i class="bx bx-trash mx-1"></i>Delete</a
-                              >
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><strong>React Project</strong></td>
-                        <td>Barry Hunter</td>
-                        <td>10</td>
-                        <td><span class="badge bg-label-success me-1">Foods</span></td>
-                        <td>
-                          <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                              <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-edit-alt me-1"></i>Edit Menu</a
-                              >
-                              <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-list-plus me-1"></i>Update Stock</a
-                              >
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><strong>VueJs Project</strong></td>
-                        <td>Trevor Baker</td>
-                        <td>10</td>
-                        <td><span class="badge bg-label-success me-1">Foods</span></td>
-                        <td>
-                          <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                              <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-edit-alt me-1"></i>Edit Menu</a
-                              >
-                              <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-list-plus me-1"></i>Update Stock</a
-                              >
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><strong>Bootstrap Project</strong></td>
-                        <td>Jerry Milton</td>
-                        <td>10</td>
-                        <td><span class="badge bg-label-warning me-1">Drinks</span></td>
-                        <td>
-                          <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                              <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                              <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-edit-alt me-1"></i>Edit Menu</a
-                              >
-                              <a class="dropdown-item" href="javascript:void(0);"
-                                ><i class="bx bx-list-plus me-1"></i>Update Stock</a
-                              >
-                            </div>
-                          </div>
-                        </td>
-                      </tr> -->
-                    </tbody>
+                    <tbody class="table-border-bottom-0"></tbody>
                   </table>
                 </div>
               </div>
@@ -477,7 +281,209 @@
     </div>
     <!-- / Layout wrapper -->
 
-     
+     <!-- Add New Menu Form Modal -->
+     <div class="modal fade" id="addModal" data-bs-backdrop="static" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="backDropModalTitle">Add New Menu Item</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="nameAdd" class="form-label">Name</label>
+                <input
+                  type="text"
+                  id="nameAdd"
+                  class="form-control"
+                  placeholder="Menu name"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="col">
+                <label for="categoryAdd" class="form-label">Category</label>
+                <select class="form-select" id="categoryAdd" aria-label="Menu category select">
+                  <option value="" selected disabled>Select category</option>
+                  <option value="drinks">Drinks</option>
+                  <option value="foods">Foods</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="priceAdd" class="form-label">Price</label>
+                <input
+                  type="number"
+                  id="priceAdd"
+                  min="0"
+                  max="30000"
+                  class="form-control"
+                  placeholder="Max Rp30,000"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="col">
+                <label for="stockAdd" class="form-label">Stock</label>
+                <input
+                  type="number"
+                  id="stockAdd"
+                  min="1"
+                  max="100"
+                  class="form-control"
+                  placeholder="Stock 1-100"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="imgUrlAdd" class="form-label">Image URL</label>
+                <input
+                  type="url"
+                  id="imgUrlAdd"
+                  class="form-control"
+                  placeholder="Insert a valid image URL"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col mb-0">
+                <label for="descAdd" class="form-label">Description</label>
+                <textarea class="form-control" id="descAdd" rows="3" placeholder="Put some intriguing menu descriptions"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" onclick="resetForm(event)">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" onclick="addMenu(event)">Add Menu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- / Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="card h-100">
+              <img class="card-img-top" src="" alt="Card image cap" />
+              <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              ></button>
+            <div class="card-body">
+              <div class="card-title">
+                <h5></h5>
+                <a href="" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editMenuDetails(event)"><i class="bx bx-edit-alt mx-1"></i>Edit data</a>
+              </div>
+              <p class="card-text"></p>
+              <div class="price-stock-group">
+                <div class="menu-price">
+                  <i class="bx bx-dollar-circle"></i>
+                  <div class="price-text"></div>
+                </div>
+                <div class="menu-stock-">
+                  <i class="bx bx-coin-stack"></i>
+                  <div class="stock-text"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Form Modal -->
+    <div class="modal fade" id="editModal" data-bs-backdrop="static" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="backDropModalTitle">Edit Menu Data</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="nameEdit" class="form-label">Name</label>
+                <input
+                  type="text"
+                  id="nameEdit"
+                  class="form-control"
+                />
+              </div>
+              <div class="col">
+                <label for="categoryEdit" class="form-label">Category</label>
+                <select class="form-select" id="categoryEdit" aria-label="Menu category select">
+                  <option value="drinks">Drinks</option>
+                  <option value="foods">Foods</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="priceEdit" class="form-label">Price</label>
+                <input
+                  type="number"
+                  id="priceEdit"
+                  min="0"
+                  max="30000"
+                  class="form-control"
+                />
+              </div>
+              <div class="col">
+                <label for="stockEdit" class="form-label">Stock</label>
+                <input
+                  type="number"
+                  id="stockEdit"
+                  min="1"
+                  max="100"
+                  class="form-control"
+                  placeholder="Stock"
+                />
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col">
+                <label for="imgUrlEdit" class="form-label">Image URL</label>
+                <input
+                  type="url"
+                  id="imgUrlEdit"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col mb-0">
+                <label for="descEdit" class="form-label">Description</label>
+                <textarea class="form-control" id="descEdit" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#detailsModal">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" onclick="saveChanges(event)">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
