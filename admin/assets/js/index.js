@@ -14,7 +14,7 @@ function displayAllMenu(){
         const rows = menuList.map((menu) => {
             return `<tr>
                         <td><strong>${menu.name}</strong></td>
-                        <td>Rp${menu.price.toLocaleString()}</td>
+                        <td>${menu.price.toLocaleString()}</td>
                         <td>${menu.stock}</td>
                         <td><span class="badge bg-label-${menu.category==="drinks"? "success":"warning"} me-1">${menu.category}</span></td>
                         <td>
@@ -23,12 +23,12 @@ function displayAllMenu(){
                                   <i class="bx bx-dots-vertical-rounded"></i>
                                 </button>
                                 <div class="dropdown-menu">
-                                  <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetails"
-                                    ><i class="bx bx-info-circle mx-1"></i>Details</a
-                                  >
-                                  <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete"
-                                    ><i class="bx bx-trash mx-1"></i>Delete</a
-                                  >
+                                    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick="getMenuDetails(${menu.id}, event)">
+                                        <i class="bx bx-info-circle mx-1"></i>Details
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="bx bx-trash mx-1"></i>Delete
+                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -39,14 +39,82 @@ function displayAllMenu(){
     .catch((err) => console.error(err.message))
 }
 
-const tableRows = menuTableBody.querySelectorAll("tr")
-for (let row of tableRows){
-    row.addEventListener("click", function(event){
-        showRowDetails(event)
+const detailsModal = document.getElementById("detailsModal")
+function getMenuDetails(menuId, e){
+    e.preventDefault()
+    fetch(`http://127.0.0.1:5000/menu/${menuId}`, {
+        method: "GET",
+        headers: { "Content-type": "application/json; charset=UTF-8" }
     })
+    .then((response) => response.json())
+    .then((jsonResponse) => {
+        const menu = jsonResponse["data"]["details"]
+        detailsModal.querySelector("img").src = `${menu.img_url}`
+        detailsModal.querySelector("h5").innerHTML = `${menu.name}`
+        detailsModal.querySelector(".card-text").innerHTML = `${menu.desc}`
+        detailsModal.querySelector(".price-text").innerHTML = `Rp${menu.price.toLocaleString()}`
+        detailsModal.querySelector(".stock-text").innerHTML = `${menu.stock} units`
+        const menuDetails = {
+            id: menuId,
+            imgUrl: menu.img_url,
+            name: menu.name,
+            desc: menu.desc,
+            price: menu.price,
+            stock: menu.stock,
+            category: menu.category
+        }
+        localStorage.setItem("menuDetails", JSON.stringify(menuDetails))
+    })
+    .catch((err) => console.error(err.message))
 }
 
-function showRowDetails(e){
-    // e.preventDefault()
-    console.log(1)
+const editModal = document.getElementById("editModal")
+function editMenuDetails(e){
+    e.preventDefault()
+    const selectedMenu = JSON.parse(localStorage.getItem("menuDetails"))
+    editModal.querySelector("#nameEdit").value = selectedMenu["name"]
+    editModal.querySelector("#categoryEdit").value = selectedMenu["category"]
+    editModal.querySelector("#priceEdit").value = selectedMenu["price"]
+    editModal.querySelector("#stockEdit").value = selectedMenu["stock"]
+    editModal.querySelector("#imgUrlEdit").value = selectedMenu["imgUrl"]
+    editModal.querySelector("#descEdit").value = selectedMenu["desc"]
+}   
+
+function saveChanges(e){
+    e.preventDefault()
+    nameValue = editModal.querySelector("#nameEdit").value 
+    categoryValue = editModal.querySelector("#categoryEdit").value 
+    priceValue = parseInt(editModal.querySelector("#priceEdit").value )
+    stockValue = parseInt(editModal.querySelector("#stockEdit").value )
+    imgUrlValue = editModal.querySelector("#imgUrlEdit").value 
+    descValue = editModal.querySelector("#descEdit").value
+    const data = {
+        name: nameValue,
+        category: categoryValue,
+        price: priceValue,
+        stock: stockValue,
+        img_url: imgUrlValue,
+        desc: descValue
+    }
+    const menuId = JSON.parse(localStorage.getItem("menuDetails"))["id"]
+    fetch(`http://127.0.0.1:5000/menu/${menuId}`, {
+        method: "PUT",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify(data)
+    })
+    .then((response) => response.json())
+    .then((jsonResponse) => {
+        Swal.fire({
+			icon: "success",
+			title: "Success!",
+            text: "Menu Data Successfully Changed",
+			showCloseButton: true,
+			confirmButtonText: "OK",
+		})
+        .then((result) =>{
+            localStorage.setItem("menuDetails", "{}")
+            window.location.reload()
+        })
+    })
+    .catch((err) => console.error(err.message))
 }

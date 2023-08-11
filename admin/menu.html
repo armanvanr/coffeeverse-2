@@ -206,12 +206,12 @@
             </div>
           </nav>
 
-          <!-- / Detail Modal -->
-          <div class="modal fade" id="modalDetails" tabindex="-1" aria-hidden="true">
+          <!-- / Details Modal -->
+          <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="card h-100">
-                    <img class="card-img-top" src="https://www.cariboucoffee.com.tr/upload/prod/cc-chai-tea-latte.png" alt="Card image cap" />
+                    <img class="card-img-top" src="" alt="Card image cap" />
                     <button
                     type="button"
                     class="btn-close"
@@ -220,20 +220,18 @@
                     ></button>
                   <div class="card-body">
                     <div class="card-title">
-                      <h5>Color Sprinkles Doughnut</h5>
-                      <a href="" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bx bx-edit-alt mx-1"></i>Edit data</a>
+                      <h5></h5>
+                      <a href="" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editMenuDetails(event)"><i class="bx bx-edit-alt mx-1"></i>Edit data</a>
                     </div>
-                    <p class="card-text">
-                      Rich espresso combined with steaming hot water create this bolder, stronger version of traditional brewed coffee.
-                    </p>
+                    <p class="card-text"></p>
                     <div class="price-stock-group">
                       <div class="menu-price">
                         <i class="bx bx-dollar-circle"></i>
-                        <div class="price-text">Rp20,000</div>
+                        <div class="price-text"></div>
                       </div>
                       <div class="menu-stock-">
                         <i class="bx bx-coin-stack"></i>
-                        <div class="stock-text">20 units</div>
+                        <div class="stock-text"></div>
                       </div>
                     </div>
                   </div>
@@ -263,15 +261,14 @@
                         type="text"
                         id="nameEdit"
                         class="form-control"
-                        placeholder="Enter Name"
-                        value="Color Sprinkles Doughnut"
+                        value=""
                       />
                     </div>
                     <div class="col">
                       <label for="categoryEdit" class="form-label">Category</label>
                       <select class="form-select" id="categoryEdit" aria-label="Menu category select">
-                        <option value="1" selected>Drinks</option>
-                        <option value="2">Foods</option>
+                        <option value="drinks">Drinks</option>
+                        <option value="foods">Foods</option>
                       </select>
                     </div>
                   </div>
@@ -284,7 +281,6 @@
                         min="0"
                         max="30000"
                         class="form-control"
-                        placeholder="Menu Price"
                       />
                     </div>
                     <div class="col">
@@ -306,7 +302,6 @@
                         type="text"
                         id="imgUrlEdit"
                         class="form-control"
-                        placeholder="Image URL"
                       />
                     </div>
                   </div>
@@ -318,10 +313,10 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalDetails">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#detailsModal">
                     Cancel
                   </button>
-                  <button type="button" class="btn btn-primary">Save</button>
+                  <button type="button" class="btn btn-primary" onclick="saveChanges(event)">Save changes</button>
                 </div>
               </form>
             </div>
@@ -357,10 +352,10 @@
                               <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetails"
+                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#detailsModal"
                                 ><i class="bx bx-info-circle mx-1"></i>Details</a
                               >
-                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete"
+                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteModal"
                                 ><i class="bx bx-trash mx-1"></i>Delete</a
                               >
                             </div>
@@ -507,5 +502,8 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>
