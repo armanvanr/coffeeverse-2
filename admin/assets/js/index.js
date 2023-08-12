@@ -1,3 +1,99 @@
+if (window.location.href.match('http://127.0.0.1:5500/admin/index.html') != null){
+    window.addEventListener("load", dipslayTopMemberOrder)
+	window.addEventListener("load", dipslayTopMemberSpend)
+	window.addEventListener("load", dipslayTopMenuOrder)
+	window.addEventListener("load", dipslayLowStockMenu)
+}
+
+const topMemberOrderTable = document.querySelector("#topMemberOrderTable tbody")
+async function dipslayTopMemberOrder(){
+    try{
+        const response = await fetch('http://127.0.0.1:5000/users/top5/order', {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        const jsonResponse = await response.json()
+        const memberList = jsonResponse["data"]["members"]
+        const rows = memberList.map((member) => {
+            return `<tr>
+                        <td>${member.name}</td>
+                        <td>${member.email}</td>
+                        <td>${member.order_times}</td>
+                    </tr>`
+        })
+        topMemberOrderTable.innerHTML = rows.join("")
+    } catch(err){
+        console.error(err.message)
+    }
+}
+
+
+const topMemberSpendTable = document.querySelector("#topMemberSpendTable tbody")
+async function dipslayTopMemberSpend(){
+    try{
+        const response = await fetch('http://127.0.0.1:5000/users/top5/spend', {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        const jsonResponse = await response.json()
+        const memberList = jsonResponse["data"]["members"]
+        const rows = memberList.map((member) => {
+            return `<tr>
+                        <td>${member.name}</td>
+                        <td>${member.email}</td>
+                        <td>${member.bill_sum.toLocaleString()}</td>
+                    </tr>`
+        })
+        topMemberSpendTable.innerHTML = rows.join("")
+    } catch(err){
+        console.error(err.message)
+    }
+}
+
+const topMenuOrderTable = document.querySelector("#topMenuOrderTable tbody")
+async function dipslayTopMenuOrder(){
+    try{
+        const response = await fetch('http://127.0.0.1:5000/menu/top5/order', {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        const jsonResponse = await response.json()
+        const menuList = jsonResponse["data"]["menu_list"]
+        const rows = menuList.map((menu) => {
+            return `<tr>
+                        <td>${menu.name}</td>
+                        <td>${menu.price}</td>
+                        <td>${menu.times.toLocaleString()}</td>
+                    </tr>`
+        })
+        topMenuOrderTable.innerHTML = rows.join("")
+    } catch(err){
+        console.error(err.message)
+    }
+}
+
+const lowStockMenuTable = document.querySelector("#lowStockMenuTable tbody")
+async function dipslayLowStockMenu(){
+    try{
+        const response = await fetch('http://127.0.0.1:5000/menu/lowstock', {
+            method: "GET",
+            headers: { "Content-type": "application/json; charset=UTF-8" }
+        })
+        const jsonResponse = await response.json()
+        const menuList = jsonResponse["data"]["menu_list"]
+        const rows = menuList.map((menu) => {
+            return `<tr>
+                        <td>${menu.name}</td>
+                        <td>${menu.price}</td>
+                        <td>${menu.stock.toLocaleString()}</td>
+                    </tr>`
+        })
+        lowStockMenuTable.innerHTML = rows.join("")
+    } catch(err){
+        console.error(err.message)
+    }
+}
+
 const menuTableBody = document.querySelector(".table-responsive tbody")
 if (window.location.href.match('http://127.0.0.1:5500/admin/menu.html') != null){
 	window.addEventListener("load", displayAllMenu)
