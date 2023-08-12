@@ -63,7 +63,16 @@ async function addMenu(e){
             body: JSON.stringify(data)
         })
         const jsonResponse = await response.json()
-        
+        Swal.fire({
+			icon: "success",
+			title: "Success!",
+            text: `${jsonResponse["message"]}`,
+			showCloseButton: true,
+			confirmButtonText: "OK",
+		})
+        .then((result) =>{
+            window.location.reload()
+        })
     } catch(err) {
         console.error(err.message)
     }
