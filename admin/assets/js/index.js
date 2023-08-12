@@ -166,3 +166,99 @@ function saveChanges(e){
     })
     .catch((err) => console.error(err.message))
 }
+
+const orderTableBody = document.querySelector(".table-responsive tbody")
+if (window.location.href.match('http://127.0.0.1:5500/admin/orders.html') != null){
+	window.addEventListener("load", displayAllOrders)
+}
+function displayAllOrders(){
+    fetch('http://127.0.0.1:5000/orders/all', {
+        method: "GET",
+        headers: { "Content-type": "application/json; charset=UTF-8" }
+    })
+    .then((response) => response.json())
+    .then((jsonResponse) => {
+        const orderList = jsonResponse["data"]["order_list"]
+        const badgeColor = {
+            "in-process": "primary",
+            "waiting-list": "warning",
+            "completed": "success",
+            "cancelled": "danger"
+        }
+
+        const actionType = {
+            "in-process": {
+                "eventListener": "completeOrder",
+                "icon": "check",
+                "text": "Complete"
+            },
+            "waiting-list": {
+                "eventListener": "cancelOrder",
+                "icon": "x",
+                "text": "Cancel"
+            },
+            "completed": {
+                "icon": "",
+                "text": ""
+            },
+            "cancelled": {
+                "icon": "",
+                "text": ""
+            },
+        }
+        const rows = orderList.map((order) => {
+            const btnElement =`<a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" onclick="${actionType[order.status]["eventListener"]}(event, ${order["id"]})">
+                                <i class="bx bx-${actionType[order.status]["icon"]}-circle mx-1"></i>${actionType[order.status]["text"]}
+                            </a>`
+            const orderActionElement = {
+                "in-process": btnElement,
+                "waiting-list": btnElement,
+                "completed": "",
+                "cancelled": ""
+            }
+            return `<tr>
+                        <td>${order.id}</td>
+                        <td>${order.customer_name}</td>
+                        <td>${order.total_bill}</td>
+                        <td><span class="badge bg-label-${badgeColor[order.status]} me-1">${order.status}</span></td>
+                        <td>${order.created_date}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                  <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" onclick="">
+                                        <i class="bx bx-info-circle mx-1"></i>Details
+                                    </a>
+                                    ${orderActionElement[order.status]}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`
+        })
+        orderTableBody.innerHTML = rows.join("")
+    })
+    .catch((err) => console.error(err.message))
+}
+
+function completeOrder(e, orderId){
+    e.preventDefault()
+    fetch(`http://127.0.0.1:5000/order/complete/${orderId}`, {
+        method: "PUT",
+        headers: { "Content-type": "application/json; charset=UTF-8" }
+    })
+    .then((response) => response.json())
+    .then((jsonResponse) => {
+        Swal.fire({
+			icon: "success",
+			title: "Success!",
+            text: `${jsonResponse["message"]}`,
+			showCloseButton: true,
+			confirmButtonText: "OK",
+		})
+        .then((result) =>{
+            window.location.reload()
+        })
+    })
+}
