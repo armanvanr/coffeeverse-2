@@ -1,16 +1,18 @@
-if (localStorage.length > 0){
+if (localStorage.length > 0 && localStorage.getItem("userData")){
 	document.getElementById('nav-sign-in').style.display = 'none'
-	document.getElementById('nav-dropdown').style.display = 'block'
 	document.getElementById('nav-cart').style.display = 'block'
+	document.getElementById('nav-sign-out').style.display = 'block'
+	document.getElementById('nav-profile').style.display = 'block'
 	updateCartCount()
     const joinBtns = document.querySelectorAll(".home-slider .btn-primary")
     for (let button of joinBtns){
-        button.style.display = "none"
+		button.style.display = "none"
     }
 } else {
 	document.getElementById('nav-sign-in').style.display = 'block'
-	document.getElementById('nav-dropdown').style.display = 'none'
 	document.getElementById('nav-cart').style.display = 'none'
+	document.getElementById('nav-sign-out').style.display = 'none'
+	document.getElementById('nav-profile').style.display = 'none'
 }
 
 //Top 5 Coffee

@@ -7844,23 +7844,25 @@ h1, h2, h3, h4, h5,
 }
 
 #main-profile {
-  background-color: #120F0F;
   margin-top: 91px;
   height: 86vh;
-  padding: 35px;
+  padding: 35px 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
 }
 
 .sidebar {
-  flex: 0.25;
+  width: 30%;
   padding: 0 40px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .upper-sidebar{
   padding: 20px;
-  border: 1px solid gray;
-  border-radius: 5px;
-  background-color: gray;
-  color: #fff;
+  background-color: #c49b63;
   margin-bottom: 5px;
 }
 
@@ -7876,7 +7878,7 @@ h1, h2, h3, h4, h5,
 }
 
 .balance-group .balance-text {
-  color: lightgray;
+  color: #fff;
   font-weight: 600;
 }
 
@@ -7890,9 +7892,7 @@ h1, h2, h3, h4, h5,
 
 .lower-sidebar{
   padding: 30px 30px;
-  border: 1px solid gray;
-  border-radius: 5px;
-  background-color: gray;
+  background-color: #c49b63;
   color: #fff;
   gap: 20px;
 }
@@ -7909,13 +7909,13 @@ h1, h2, h3, h4, h5,
   text-align: center;
   width: 30px;
   font-size: 1.5rem;
+  color: #fff;
 }
 
 .profile-content {
-  flex: 0.75;
+  width: 65%;
   padding: 25px 40px 40px 40px;
-  border: 1px solid gray;
-  border-radius: 5px;
+  background-color: #030202;
 }
 
 .user-data > div {
