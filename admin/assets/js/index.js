@@ -1,3 +1,54 @@
+if (window.location.href.match("http://127.0.0.1:5500/admin/index.html") && localStorage.length===0){
+    window.location.href = "./signin.html"
+}
+
+function signin(e){
+    e.preventDefault()
+    const email = document.getElementById("signinEmail").value
+    const password = document.getElementById("signinPassword").value
+    let token = btoa(email + ":" + password)
+    let myHeaders = new Headers()
+    myHeaders.append("Authorization", "Basic" + " " + token)
+    myHeaders.append("Content-type", "application/json; charset=UTF-8")
+    fetch('http://127.0.0.1:5000/admin/login', {
+        method: "POST",
+        headers: myHeaders
+    })
+    .then((response) => {
+        if (response.ok){
+            return response.json()
+        } else {
+            throw response
+        }
+    })
+    .then((jsonResponse) => {
+        Swal.fire({
+			icon: "success",
+			title: "Success!",
+            text: `${jsonResponse["message"]}`,
+			showCloseButton: true,
+			confirmButtonText: "OK",
+		})
+        .then((result) =>{
+            localStorage.setItem("adminData", JSON.stringify(jsonResponse["data"]))
+            window.location.href = "./index.html"
+        })
+    })
+    .catch((err) => {
+        err.json()
+        .then((jsonError) => {
+            console.error(err.message)
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: `${jsonError["message"]}`,
+                showCloseButton: true,
+                confirmButtonText: "OK",
+            })
+        })
+    })
+}
+
 if (window.location.href.match('http://127.0.0.1:5500/admin/index.html') != null){
     window.addEventListener("load", dipslayTopMemberOrder)
 	window.addEventListener("load", dipslayTopMemberSpend)

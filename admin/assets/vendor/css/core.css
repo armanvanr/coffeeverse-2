@@ -3942,6 +3942,11 @@ textarea.form-control-lg {
 }
 
 /* Arman */
+.app-brand-logo img {
+  height: 45px;
+  width: 45px;
+}
+
 .modal .card-img-top {
   border-radius: 0.5rem;
   width: 50%;
