@@ -1,5 +1,10 @@
-if (window.location.href.match("http://127.0.0.1:5500/admin/index.html") && localStorage.length===0){
+if (localStorage.length === 0 && window.location.href.match("http://127.0.0.1:5500/admin/index.html") ){
     window.location.href = "./signin.html"
+}
+
+if (localStorage.length > 0 ) {
+    const adminName = JSON.parse(localStorage.getItem("adminData"))["name"]
+    document.querySelector(".dropdown-menu .fw-semibold").innerHTML = adminName
 }
 
 function signin(e){
@@ -47,6 +52,12 @@ function signin(e){
             })
         })
     })
+}
+
+function signout(e){
+    localStorage.clear()
+    console.log(11)
+    window.location.href = "./signin.html"
 }
 
 if (window.location.href.match('http://127.0.0.1:5500/admin/index.html') != null){
