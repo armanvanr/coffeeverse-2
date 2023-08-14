@@ -16,7 +16,8 @@ if (localStorage.length > 0 && localStorage.getItem("userData")){
 }
 
 //Top 5 Coffee
-if (window.location.href.match('http://127.0.0.1:5500/index.html') != null){
+const homeUrlPath = ['/', '/index.html']
+if (homeUrlPath.includes(window.location.pathname)){
 	window.addEventListener("load", getTopMenu)
 }
 async function getTopMenu() {
@@ -55,7 +56,7 @@ async function getTopMenu() {
 }
 
 //Show All Menu Items
-if (window.location.href.match('http://127.0.0.1:5500/menu.html') != null){
+if (window.location.pathname === '/menu.html'){
 	window.addEventListener("load", fetchAllMenu)
 }
 async function fetchAllMenu() {
@@ -147,7 +148,7 @@ function addItemToCart(menuId, event){
 		const menuDesc = document.querySelector(`.menu-card-${menuId} .text .desc`).innerHTML
 		const menuPrice = document.querySelector(`.menu-card-${menuId} .price span`).innerHTML.slice(2).replace(',','')
 		const cart = JSON.parse(localStorage.getItem("cartData"))
-		addedItem = cart.find(item => item.menuId === menuId)
+		const addedItem = cart.find(item => item.menuId === menuId)
 		if (addedItem){
 			addedItem.qty += 1
 		} else {
@@ -193,7 +194,7 @@ function updateCartCount(){
 }
 
 //Show Cart Items
-if (window.location.href.match('http://127.0.0.1:5500/cart.html') != null){
+if (window.location.pathname === '/cart.html'){
 	window.addEventListener("load", showCartItems)
 }
 
@@ -203,7 +204,7 @@ function showCartItems(){
 	if (cartItems){
 		const itemRows = cartItems.map((item) => {
 			return `<tr class="text-center" id="menu-${item.menuId}">
-						<td class="product-remove"><a href="#"><span class="icon-close"></span></a></td>
+						<td class="product-remove"><a href="" onclick="removeItemFromCart(event, ${item.menuId})"><span class="icon-close"></span></a></td>
 				
 						<td class="image-prod"><div class="img" style="background-image:url(${item.menuImg}); background-position: bottom"></div></td>
 				
@@ -274,6 +275,17 @@ function minusQty(e, price, id){
 	}
 }
 
+//Remove item from cart
+function removeItemFromCart(e, menuId){
+	e.preventDefault()
+	let cart = JSON.parse(localStorage.getItem("cartData"))
+	const newCart = cart.filter(item => item.menuId !== menuId)
+	localStorage.setItem("cartData", JSON.stringify(newCart))
+	updateCartCount()
+	showCartItems()
+	billSum()
+}
+
 //Sum up the bill
 function billSum(){
 	const cartItems = JSON.parse(localStorage.getItem("cartData"))
@@ -291,6 +303,7 @@ function billSum(){
 	document.getElementById("balance").innerHTML = `Rp${balance.toLocaleString()}`
 }
 
+
 //Create Order
 function createOrder(event){
 	event.preventDefault()
@@ -305,7 +318,13 @@ function createOrder(event){
 		headers: { "Content-type": "application/json; charset=UTF-8" },
 		body: JSON.stringify({order_items : data, user_data: userData})
 	})
-	.then((response) => response.json())
+	.then((response) => {
+		if (response.ok){
+			return response.json()
+		} else {
+			throw response
+		}
+	})
 	.then((jsonResponse) => {
 		//clear cartData in localstorage
 		localStorage.setItem("cartData", JSON.stringify([]))
@@ -343,7 +362,23 @@ function createOrder(event){
 			}
 		})
 	})
-	.catch((err) => console.error(err.message))
+	.catch((err) => {
+		err.json()
+		.then((jsonError) => {
+			console.error(err.message)
+			Swal.fire({
+				icon: "error",
+				title: "Failed to create an order",
+				text: `${jsonError["message"]}`,
+				background: "#1E1B1B",
+				color: "#fff",
+				showCloseButton: true,
+				confirmButtonColor: "#c49b5d",
+				confirmButtonText: "Change My Order",
+				focusConfirm: false,
+			})
+		})
+	})
 }
 
 //Cancel Order
@@ -373,7 +408,7 @@ function cancelOrder(orderId){
 }
 
 //Sign In
-if (window.location.href.match('http://127.0.0.1:5500/signin.html') != null){
+if (window.location.pathname === '/signin.html'){
 	let formSubmit = document.getElementById("btn-sign-in")
 	formSubmit.addEventListener("click", signin)
 }
@@ -402,13 +437,7 @@ function signin(e) {
         .then((jsonResponse) => {
                 localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
 				localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]["cart"]))
-                if (jsonResponse.data.role === 'admin'){
-					console.info('to admin page')
-					window.location.href = 'http://127.0.0.1:5500/index.html'
-					// window.location.href = 'http://127.0.0.1:5500/admin/index.html'
-				} else if (jsonResponse.data.role === 'member'){
-					window.location.href = 'http://127.0.0.1:5500/index.html'
-				}
+				window.location.href = 'http://127.0.0.1:5500/index.html'
         })
         .catch((error) => {
             statusBox.style.color = "#ff3f3f"
@@ -421,7 +450,7 @@ function signin(e) {
 }
 
 //Sign Up
-if (window.location.href.match('http://127.0.0.1:5500/signup.html') != null){
+if (window.location.pathname === '/signup.html'){
 	let formSubmit = document.getElementById("btn-sign-up")
 	formSubmit.addEventListener("click", signup)
 }
@@ -498,19 +527,17 @@ function signout(e){
 }
 
 //Profile
-if (window.location.href.match('http://127.0.0.1:5500/signup.html') != null){
-	displayUserData(e)
+if (window.location.href.match('http://127.0.0.1:5500/profile.html') != null){
+	displayUserData()
 }
 
-const changeToggleBtn = document.getElementById("data-change")
-const saveToggleBtn = document.getElementById("data-save")
-const usernameInput = document.getElementById("user-name-input")
-const userNameText = document.getElementById("user-name-text")
-const userEmailText = document.getElementById("user-email-text")
-const userBalanceText = document.getElementById("user-balance-text")
-const usernameSidebar = document.querySelector(".sidebar .user-name")
 
 function displayUserData(){
+	const usernameInput = document.getElementById("user-name-input")
+	const userNameText = document.getElementById("user-name-text")
+	const userEmailText = document.getElementById("user-email-text")
+	const userBalanceText = document.getElementById("user-balance-text")
+	const usernameSidebar = document.querySelector(".sidebar .user-name")
 	const userData = JSON.parse(localStorage.getItem('userData'))
 	usernameSidebar.innerHTML = userData["name"]
 	usernameInput.value = userData["name"]
@@ -519,16 +546,21 @@ function displayUserData(){
 	userBalanceText.innerHTML = `Rp${userData["balance"].toLocaleString()}`
 }
 
+const changeToggleBtn = document.getElementById("data-change")
 function changeToggle(e){
 	e.preventDefault()
+	const usernameInput = document.getElementById("user-name-input")
+	const userNameText = document.getElementById("user-name-text")
 	saveToggleBtn.style.display = 'inline-block'
 	changeToggleBtn.style.display = 'none'
 	usernameInput.style.display = 'inline-block'
 	userNameText.style.display = 'none'
 }
 
+const saveToggleBtn = document.getElementById("data-save")
 function saveToggle(e){
 	e.preventDefault()
+	const usernameInput = document.getElementById("user-name-input")
 	const userData = JSON.parse(localStorage.getItem('userData'))
 	fetch('http://127.0.0.1:5000/user/update', {
 		method: "PUT",
@@ -545,14 +577,13 @@ function saveToggle(e){
 			showCloseButton: true,
 			confirmButtonColor: "#c49b5d",
 			confirmButtonText: "OK",
+			focusConfirm: false
 		})
 		.then((response) => {
 			userData["name"] = usernameInput.value
 			localStorage.setItem("userData", JSON.stringify(userData))
 			saveToggleBtn.style.display = 'none'
 			changeToggleBtn.style.display = 'inline-block'
-			usernameInput.style.display = 'none'
-			userNameText.style.display = 'inline-block'
 			window.location.reload()
 		})
 	})
