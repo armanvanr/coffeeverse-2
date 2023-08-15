@@ -33,7 +33,6 @@ async function getTopMenu() {
         })
         if (response.ok) {
             const jsonResponse = await response.json()
-			console.log(jsonResponse)
             const cards = jsonResponse["data"]["drinks"].map((menu) => {
                 return `<div class="col-md-4">
         					<div class="menu-entry menu-card-${menu.id}">
@@ -559,24 +558,34 @@ function signout(e){
 	})
 }
 
-//Profile
-if (window.location.href.match('http://127.0.0.1:5500/profile.html') != null){
+// Member Account Page
+const accountUrlPath = ['/profile.html', '/orders.html', '/wallet.html']
+if (accountUrlPath.includes(window.location.pathname)){
+	displaySidebar()
+}
+
+if (window.location.pathname === '/profile.html'){
 	displayUserData()
 }
 
+// Display user data in sidebar
+function displaySidebar(){
+	const userData = JSON.parse(localStorage.getItem("userData"))
+	const userBalanceText = document.getElementById("user-balance-text")
+	const usernameSidebar = document.querySelector(".sidebar .user-name")
+	userBalanceText.innerHTML = `Rp${userData["balance"].toLocaleString()}`
+	usernameSidebar.innerHTML = userData["name"]
+}
 
+// Display user data in profile content
 function displayUserData(){
+	const userData = JSON.parse(localStorage.getItem("userData"))
 	const usernameInput = document.getElementById("user-name-input")
 	const userNameText = document.getElementById("user-name-text")
 	const userEmailText = document.getElementById("user-email-text")
-	const userBalanceText = document.getElementById("user-balance-text")
-	const usernameSidebar = document.querySelector(".sidebar .user-name")
-	const userData = JSON.parse(localStorage.getItem("userData"))
-	usernameSidebar.innerHTML = userData["name"]
 	usernameInput.value = userData["name"]
 	userNameText.innerHTML = userData["name"]
 	userEmailText.innerHTML = userData["email"]
-	userBalanceText.innerHTML = `Rp${userData["balance"].toLocaleString()}`
 }
 
 const changeToggleBtn = document.getElementById("data-change")
@@ -619,5 +628,48 @@ function saveToggle(e){
 			changeToggleBtn.style.display = "inline-block"
 			window.location.reload()
 		})
+	})
+}
+
+// Display all orders created by user
+if (window.location.pathname === '/orders.html'){
+	window.addEventListener("load", getAllOrders)
+}
+function getAllOrders(){
+	const orderCardsContainer = document.querySelector(".order-cards-container")
+	const email = JSON.parse(localStorage.getItem("userData"))["email"]
+	fetch('http://127.0.0.1:5000/orders/user', {
+            method: "POST",
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+			body: JSON.stringify({email: email})
+    })
+	.then((response) => response.json())
+	.then((jsonResponse) => {
+		const orders = jsonResponse["data"]["order_list"]
+		const cards = orders.map((order) => {
+			const orderItems = order.items.join(", ")
+			const createdDate = order.created_date.slice(0, 16)
+			return `<div class="order-card">
+						<div class="order-card-header">
+							<h6 class="order-id-group">Order ID: <strong>${order.id}</strong></h6>
+							<a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+							<div class="dropdown-menu" aria-labelledby="cardDropdown">
+								<a class="dropdown-item"><span class="icon icon-info-circle"></span>Details</a>
+								<a class="dropdown-item"><span class="icon icon-times-circle"></span>Cancel Order</a>
+							</div>
+						</div>
+						<div class="order-card-body">
+							<div class="order-date-status-group">
+								<div class="order-date">${createdDate}</div>
+								<div class="order-status">${order.status}#<strong>1</strong></div>
+							</div>
+							<div class="menu-group">
+								<div class="item-names">${order.items.length} item(s): ${orderItems}</div>
+								<div class="total-bill">Total Rp<strong>${order.total_bill.toLocaleString()}</strong></div>
+							</div>
+						</div>
+					</div>`
+		})
+		orderCardsContainer.innerHTML = cards.join("")
 	})
 }

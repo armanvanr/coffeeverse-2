@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Coffeeverse - User Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
+
+    <link rel="icon" type="image/x-icon" href="fonts/favicon.ico" />
+
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+
+    <link rel="stylesheet" href="css/aos.css">
+
+    <link rel="stylesheet" href="css/ionicons.min.css">
+
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="css/jquery.timepicker.css">
+
+
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+	      <a class="navbar-brand" href="index.html">Coffee<small>verse</small></a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="oi oi-menu"></span> Menu
+	      </button>
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav ml-auto">
+	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+	          <li class="nav-item"><a href="menu.html" class="nav-link">Menu</a></li>
+			  <li class="nav-item" id="nav-sign-in"><a href="signin.html" class="nav-link">Sign In</a></li>
+              <li class="nav-item active" id="nav-profile"><a class="nav-link" href="profile.html">Profile</a></li>
+			  <li class="nav-item" id="nav-sign-out"><a class="nav-link" href="" id="nav-sign-out">Sign Out</a></li>
+	          <li class="nav-item cart" id="nav-cart"><a href="cart.html" class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small></small></span></a></li>
+	        </ul>
+	      </div>
+		  </div>
+	  </nav>
+    <!-- END nav -->
+
+    <section class="ftco-about d-md-flex" id="main-profile">
+        <div class="sidebar">
+            <div class="upper-sidebar text-center">
+                <div class="user-name"></div>
+                <div class="balance-group d-flex justify-content-center align-items-center">
+                    <div class="balance-text">Balance</div>
+                    <div class="balance-badge" id="user-balance-text"></div>
+                </div>
+            </div>
+            <div class="lower-sidebar">
+                <div class="sidebar-nav account"><a href="profile.html"><span class="icon-user"></span>My Profile</a></div>
+                <div class="sidebar-nav order-list"><a href="orders.html"><span class="icon-event_note"></span>My Orders</a></div>
+                <div class="sidebar-nav wallet"><a href="ewallet.html"><span class="icon-account_balance_wallet"></span>E-Wallet</a></div>
+            </div>
+        </div>
+        <div class="profile-content">
+            <h4>My Orders</h4>
+            <hr/>
+            <div class="order-cards-container">
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h6 class="order-id-group">Order ID: <strong>25</strong></h6>
+                        <a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="cardDropdown">
+                            <a class="dropdown-item"><span class="icon icon-info-circle"></span>Details</a>
+                            <a class="dropdown-item"><span class="icon icon-times-circle"></span>Cancel Order</a>
+                        </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-date-status-group">
+                            <div class="order-date">15 Aug 2023</div>
+                            <div class="order-status">Waiting-list #<strong>1</strong></div>
+                        </div>
+                        <div class="menu-group">
+                            <div class="item-names">Cappuccino, Vanilla Latte, Choco Muffin</div>
+                            <div class="total-bill">Total Rp<strong>56,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h6 class="order-id-group">Order ID: <strong>25</strong></h6>
+                        <a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="cardDropdown">
+                            <a class="dropdown-item">Details</a>
+                            <a class="dropdown-item">Cancel Order</a>
+                        </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-date-status-group">
+                            <div class="order-date">15 Aug 2023</div>
+                            <div class="order-status">Waiting-list #<strong>1</strong></div>
+                        </div>
+                        <div class="menu-group">
+                            <div class="item-names">Cappuccino, Choco Muffin</div>
+                            <div class="total-bill">Total Rp<strong>56,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h6 class="order-id-group">Order ID: <strong>25</strong></h6>
+                        <a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="cardDropdown">
+                            <a class="dropdown-item">Details</a>
+                            <a class="dropdown-item">Cancel Order</a>
+                        </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-date-status-group">
+                            <div class="order-date">15 Aug 2023</div>
+                            <div class="order-status">Waiting-list #<strong>1</strong></div>
+                        </div>
+                        <div class="menu-group">
+                            <div class="item-names">Cappuccino, Choco Muffin</div>
+                            <div class="total-bill">Total Rp<strong>56,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h6 class="order-id-group">Order ID: <strong>25</strong></h6>
+                        <a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="cardDropdown">
+                            <a class="dropdown-item">Details</a>
+                            <a class="dropdown-item">Cancel Order</a>
+                        </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-date-status-group">
+                            <div class="order-date">15 Aug 2023</div>
+                            <div class="order-status">Waiting-list #<strong>1</strong></div>
+                        </div>
+                        <div class="menu-group">
+                            <div class="item-names">Cappuccino, Choco Muffin</div>
+                            <div class="total-bill">Total Rp<strong>56,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h6 class="order-id-group">Order ID: <strong>25</strong></h6>
+                        <a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="cardDropdown">
+                            <a class="dropdown-item">Details</a>
+                            <a class="dropdown-item">Cancel Order</a>
+                        </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-date-status-group">
+                            <div class="order-date">15 Aug 2023</div>
+                            <div class="order-status">Waiting-list #<strong>1</strong></div>
+                        </div>
+                        <div class="menu-group">
+                            <div class="item-names">Cappuccino, Choco Muffin</div>
+                            <div class="total-bill">Total Rp<strong>56,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <h6 class="order-id-group">Order ID: <strong>25</strong></h6>
+                        <a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="cardDropdown">
+                            <a class="dropdown-item">Details</a>
+                            <a class="dropdown-item">Cancel Order</a>
+                        </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-date-status-group">
+                            <div class="order-date">15 Aug 2023</div>
+                            <div class="order-status">Waiting-list #<strong>1</strong></div>
+                        </div>
+                        <div class="menu-group">
+                            <div class="item-names">Cappuccino, Choco Muffin</div>
+                            <div class="total-bill">Total Rp<strong>56,000</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00" />
+        </svg>
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/jquery.timepicker.min.js"></script>
+    <script src="js/scrollax.min.js"></script>
+    <script src="js/google-map.js"></script>
+    <script src="js/main.js"></script>
+	<script src="js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</body>
+</html>

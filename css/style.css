@@ -7529,6 +7529,7 @@ h1, h2, h3, h4, h5,
   color: #fff;
 }
 
+
 .owl-carousel {
   position: relative; }
   .owl-carousel .owl-item {
@@ -7875,6 +7876,7 @@ h1, h2, h3, h4, h5,
 
 .balance-group {
   gap: 20px;
+  padding: 0 10px;
 }
 
 .balance-group .balance-text {
@@ -7895,6 +7897,11 @@ h1, h2, h3, h4, h5,
   background-color: #c49b63;
   color: #fff;
   gap: 20px;
+  padding: 20px;
+}
+
+.sidebar-nav {
+  margin-bottom: 20px;
 }
 
 .lower-sidebar .sidebar-nav a {
@@ -7903,6 +7910,7 @@ h1, h2, h3, h4, h5,
   gap: 10px;
   color:#141414;
   font-weight: 600;
+  padding: 0 10px;
 }
 
 .lower-sidebar .sidebar-nav span{
@@ -7946,8 +7954,6 @@ h1, h2, h3, h4, h5,
   color: #fff;
 }
 
-
-
 .profile-btn-group {
   display: flex;
   flex-direction: column;
@@ -7955,6 +7961,98 @@ h1, h2, h3, h4, h5,
   gap: 10px;
   padding: 10px;
   margin-top: 20px;
+}
+
+.order-cards-container {
+  max-height: 84%;
+  width: 90%;
+  margin: auto;
+  overflow: auto;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  border: 1px solid grey;
+  margin-left: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #C49B63;
+  border-radius: 10px;
+}
+
+.order-card {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #151111;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.order-card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid white;
+  margin-bottom: 10px;
+}
+
+.order-card-header .nav-link .icon {
+  font-size: 1.2rem;
+}
+
+.order-card-header .nav-link .icon:hover {
+  color: #fff;
+}
+
+.order-card-body div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.order-card-header .dropdown-toggle::after {
+  display: none;
+}
+
+.order-card-header .dropdown-menu {
+  border: none;
+  background-color: #0d0d0d;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.order-card-header .dropdown-menu .dropdown-item {
+  color: #fff;
+  background-color: #0d0d0d;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-card-header .dropdown-menu .dropdown-item:hover, .order-card-header .dropdown-menu .dropdown-item:hover span {
+  color: #C49B63;
+  cursor: pointer;
+}
+
+.order-card-header .dropdown-menu .dropdown-item span {
+  color: #fff;
+}
+
+.menu-group .item-names {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 
 .ftco-services {
