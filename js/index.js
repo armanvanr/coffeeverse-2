@@ -1,3 +1,7 @@
+window.onbeforeunload = function() {
+	window.scrollTo(0, 0);
+}
+
 if (localStorage.length > 0 && localStorage.getItem("userData")){
 	document.getElementById('nav-sign-in').style.display = 'none'
 	document.getElementById('nav-cart').style.display = 'block'
@@ -45,10 +49,8 @@ async function getTopMenu() {
             	})
             bestSellerContainer.innerHTML = cards.join('<br/>')
 
-			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
 				updateCartCount()
-				// disableCartBtn()
 			}
         } else {
             throw await response.json()
@@ -93,10 +95,8 @@ async function fetchAllMenu() {
                 }
             }
 
-			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
 				updateCartCount()
-				// disableCartBtn()
 			}
         } else {
             throw await response.json()
@@ -132,10 +132,8 @@ async function searchMenu(event){
                 })
 		    searchResultContainer.innerHTML = cards.join('<br/>')
 			
-			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
 				updateCartCount()
-				// disableCartBtn()
 			}
         } else {
             throw await response.json()
@@ -159,7 +157,17 @@ async function addItemToCart(event, menuId, menuStock){
 			if (addedItem.qty < addedItem.menuStock){
 				addedItem.qty += 1
 			} else {
-				alert('max')
+				Swal.fire({
+					icon: "warning",
+					title: "Oops",
+					text: "Maximum item quantity reached",
+					background: "#1E1B1B",
+					color: "#fff",
+					showCloseButton: true,
+					confirmButtonColor: "#c49b5d",
+					confirmButtonText: "OK",
+					focusConfirm: false,
+				})
 			}
 		} else {
 			cart.push({
@@ -261,7 +269,17 @@ function plusQty(e, price, id){
 		updateCartCount()
 		billSum()
 	} else {
-		alert('max in cart')
+		Swal.fire({
+			icon: "warning",
+			title: "Oops",
+			text: "Maximum item quantity reached",
+			background: "#1E1B1B",
+			color: "#fff",
+			showCloseButton: true,
+			confirmButtonColor: "#c49b5d",
+			confirmButtonText: "OK",
+			focusConfirm: false,
+		})
 	}
 }
 
