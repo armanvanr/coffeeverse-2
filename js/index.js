@@ -29,6 +29,7 @@ async function getTopMenu() {
         })
         if (response.ok) {
             const jsonResponse = await response.json()
+			console.log(jsonResponse)
             const cards = jsonResponse["data"]["drinks"].map((menu) => {
                 return `<div class="col-md-4">
         					<div class="menu-entry menu-card-${menu.id}">
@@ -37,15 +38,17 @@ async function getTopMenu() {
     								<h3><a href="#">${menu.name}</a></h3>
     								<p class="desc">${menu.desc}</p>
     								<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-    								<p><a href="#" class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id}, event)">Add to Cart</a></p>
+    								<p><a href="#" class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to Cart</a></p>
     							</div>
     						</div>
         				</div>`
             	})
             bestSellerContainer.innerHTML = cards.join('<br/>')
+
 			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
 				updateCartCount()
+				// disableCartBtn()
 			}
         } else {
             throw await response.json()
@@ -78,7 +81,7 @@ async function fetchAllMenu() {
 										<h3><a href="#">${menu.name}</a></h3>
 										<p class="desc pt-1">${menu.desc}</p>
 										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-										<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id}, event)">Add to cart</a></p>
+										<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a></p>
 									</div>
 								</div>
 							</div>`
@@ -89,10 +92,11 @@ async function fetchAllMenu() {
                     foodsContainer.innerHTML = cards.join('<br/>')
                 }
             }
+
 			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
-				// disableCartBtn()
 				updateCartCount()
+				// disableCartBtn()
 			}
         } else {
             throw await response.json()
@@ -121,16 +125,17 @@ async function searchMenu(event){
 									<h3><a href="#">${menu.name}</a></h3>
 									<p class="desc pt-1">${menu.desc}</p>
 									<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-									<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(${menu.id}, event)">Add to cart</a></p>
+									<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a></p>
 								</div>
 							</div>
 						</div>`
                 })
 		    searchResultContainer.innerHTML = cards.join('<br/>')
+			
 			//persist disabled state of cart button each time the menu page has finished fetching data
 			if (localStorage.length > 0){
-				// disableCartBtn()
 				updateCartCount()
+				// disableCartBtn()
 			}
         } else {
             throw await response.json()
@@ -140,17 +145,22 @@ async function searchMenu(event){
     }
 }
 
-function addItemToCart(menuId, event){
+
+async function addItemToCart(event, menuId, menuStock){
 	event.preventDefault()
 	if (localStorage.length > 0){
 		const menuName = document.querySelector(`.menu-card-${menuId} .text h3 a`).innerHTML
 		const menuImg = document.querySelector(`.menu-card-${menuId} a`).style.backgroundImage.split('"')[1]
 		const menuDesc = document.querySelector(`.menu-card-${menuId} .text .desc`).innerHTML
-		const menuPrice = document.querySelector(`.menu-card-${menuId} .price span`).innerHTML.slice(2).replace(',','')
+		const menuPrice = document.querySelector(`.menu-card-${menuId} .price span`).innerHTML.slice(2).replace(',', '')
 		const cart = JSON.parse(localStorage.getItem("cartData"))
 		const addedItem = cart.find(item => item.menuId === menuId)
 		if (addedItem){
-			addedItem.qty += 1
+			if (addedItem.qty < addedItem.menuStock){
+				addedItem.qty += 1
+			} else {
+				alert('max')
+			}
 		} else {
 			cart.push({
 				menuId : menuId,
@@ -158,12 +168,11 @@ function addItemToCart(menuId, event){
 				menuImg: menuImg,
 				menuDesc: menuDesc,
 				menuPrice: parseInt(menuPrice),
+				menuStock: menuStock,
 				qty: 1
 			})
 		}
 		localStorage.setItem("cartData", JSON.stringify(cart))
-		// const cartBtn = document.getElementById(`cart-menu-${menuId}`)
-		// cartBtn.classList.add("disabled")
 		
 		const navCartItemCount = document.querySelector("#nav-cart small")
 		const count = JSON.parse(localStorage.getItem("cartData")).length
@@ -174,22 +183,18 @@ function addItemToCart(menuId, event){
 	}
 }
 
-function disableCartBtn(){
-	const cart = JSON.parse(localStorage.getItem("cartData"))
-	cart.forEach(item => {
-		let cartBtn = document.getElementById(`cart-menu-${item["menuId"]}`)
-		cartBtn.classList.add("disabled")
-	})
-}
-
 function updateCartCount(){
 	const navCartItemCount = document.querySelector("#nav-cart small")
 	
 	const cartData = JSON.parse(localStorage.getItem("cartData"))
-	if (cartData.length > 0){
+	if (cartData !== null && cartData.length > 0){
 		const count = cartData.reduce((n, {qty}) => n + qty, 0)
 		navCartItemCount.innerHTML = count
-		navCartItemCount.parentElement.style.visibility = 'visible'
+		navCartItemCount.parentElement.style.visibility = "visible"
+	}
+	else {
+		navCartItemCount.innerHTML = ""
+		navCartItemCount.parentElement.style.visibility = "hidden"
 	}
 }
 
@@ -204,7 +209,7 @@ function showCartItems(){
 	if (cartItems){
 		const itemRows = cartItems.map((item) => {
 			return `<tr class="text-center" id="menu-${item.menuId}">
-						<td class="product-remove"><a href="" onclick="removeItemFromCart(event, ${item.menuId})"><span class="icon-close"></span></a></td>
+						<td class="product-remove"><a href="" onclick="removeItemFromCart(event, ${item.menuId}, ${item.qty})"><span class="icon-close"></span></a></td>
 				
 						<td class="image-prod"><div class="img" style="background-image:url(${item.menuImg}); background-position: bottom"></div></td>
 				
@@ -246,14 +251,17 @@ function plusQty(e, price, id){
 	let cartItems = JSON.parse(localStorage.getItem("cartData"))
 	const idx = cartItems.findIndex((item) => item.menuId === id)
 	const item = cartItems[idx]
-	if (parseInt(quantity.value) < 100){
+
+	if (item.qty < item.menuStock){
 		quantity.value = parseInt(quantity.value) + 1
 		total.innerHTML = parseInt(quantity.value)*price
 		item.qty = parseInt(quantity.value)
 		cartItems[idx] = item
-		localStorage.setItem('cartData', JSON.stringify(cartItems))
+		localStorage.setItem("cartData", JSON.stringify(cartItems))
 		updateCartCount()
 		billSum()
+	} else {
+		alert('max in cart')
 	}
 }
 
@@ -264,12 +272,13 @@ function minusQty(e, price, id){
 	let cartItems = JSON.parse(localStorage.getItem("cartData"))
 	const idx = cartItems.findIndex((item) => item.menuId === id)
 	const item = cartItems[idx]
+
 	if (parseInt(quantity.value) > 1){
 		quantity.value = parseInt(quantity.value) - 1
 		total.innerHTML = parseInt(quantity.value)*price
 		item.qty = parseInt(quantity.value)
 		cartItems[idx] = item
-		localStorage.setItem('cartData', JSON.stringify(cartItems))
+		localStorage.setItem("cartData", JSON.stringify(cartItems))
 		updateCartCount()
 		billSum()
 	}
@@ -278,12 +287,18 @@ function minusQty(e, price, id){
 //Remove item from cart
 function removeItemFromCart(e, menuId){
 	e.preventDefault()
-	let cart = JSON.parse(localStorage.getItem("cartData"))
+	const cart = JSON.parse(localStorage.getItem("cartData"))
+	
 	const newCart = cart.filter(item => item.menuId !== menuId)
 	localStorage.setItem("cartData", JSON.stringify(newCart))
+	
 	updateCartCount()
 	showCartItems()
 	billSum()
+	const currentCart = JSON.parse(localStorage.getItem("cartData"))
+	if (currentCart.length === 0) {
+		window.location.href = '/index.html'
+	}
 }
 
 //Sum up the bill
@@ -365,7 +380,7 @@ function createOrder(event){
 	.catch((err) => {
 		err.json()
 		.then((jsonError) => {
-			console.error(err.message)
+			console.error(jsonError.message)
 			Swal.fire({
 				icon: "error",
 				title: "Failed to create an order",
@@ -424,7 +439,7 @@ function signin(e) {
 
     let statusBox = document.getElementById("sign-in-status")
     fetch('http://127.0.0.1:5000/user/login', {
-        method: 'POST',
+        method: "POST",
         headers: myHeaders,
     })
         .then((response) => {
@@ -508,8 +523,8 @@ async function signup(e) {
 }
 
 //Sign Out
-let signOutBtn = document.getElementById('nav-sign-out')
-signOutBtn.addEventListener('click', signout)
+let signOutBtn = document.getElementById("nav-sign-out")
+signOutBtn.addEventListener("click", signout)
 function signout(e){
 	e.preventDefault()
 	fetch('http://127.0.0.1:5000/user/logout', {
@@ -538,7 +553,7 @@ function displayUserData(){
 	const userEmailText = document.getElementById("user-email-text")
 	const userBalanceText = document.getElementById("user-balance-text")
 	const usernameSidebar = document.querySelector(".sidebar .user-name")
-	const userData = JSON.parse(localStorage.getItem('userData'))
+	const userData = JSON.parse(localStorage.getItem("userData"))
 	usernameSidebar.innerHTML = userData["name"]
 	usernameInput.value = userData["name"]
 	userNameText.innerHTML = userData["name"]
@@ -551,17 +566,17 @@ function changeToggle(e){
 	e.preventDefault()
 	const usernameInput = document.getElementById("user-name-input")
 	const userNameText = document.getElementById("user-name-text")
-	saveToggleBtn.style.display = 'inline-block'
-	changeToggleBtn.style.display = 'none'
-	usernameInput.style.display = 'inline-block'
-	userNameText.style.display = 'none'
+	saveToggleBtn.style.display = "inline-block"
+	changeToggleBtn.style.display = "none"
+	usernameInput.style.display = "inline-block"
+	userNameText.style.display = "none"
 }
 
 const saveToggleBtn = document.getElementById("data-save")
 function saveToggle(e){
 	e.preventDefault()
 	const usernameInput = document.getElementById("user-name-input")
-	const userData = JSON.parse(localStorage.getItem('userData'))
+	const userData = JSON.parse(localStorage.getItem("userData"))
 	fetch('http://127.0.0.1:5000/user/update', {
 		method: "PUT",
 		headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -582,8 +597,8 @@ function saveToggle(e){
 		.then((response) => {
 			userData["name"] = usernameInput.value
 			localStorage.setItem("userData", JSON.stringify(userData))
-			saveToggleBtn.style.display = 'none'
-			changeToggleBtn.style.display = 'inline-block'
+			saveToggleBtn.style.display = "none"
+			changeToggleBtn.style.display = "inline-block"
 			window.location.reload()
 		})
 	})
