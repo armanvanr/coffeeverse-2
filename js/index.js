@@ -213,6 +213,9 @@ if (window.location.pathname === '/cart.html'){
 function showCartItems(){
 	const cartItems = JSON.parse(localStorage.getItem("cartData"))
 	const cartTableRows = document.querySelector('.cart-list tbody')
+	if (cartItems.length === 0) {
+		window.location.href = '/index.html'
+	}
 	if (cartItems){
 		const itemRows = cartItems.map((item) => {
 			return `<tr class="text-center" id="menu-${item.menuId}">
@@ -329,10 +332,10 @@ function billSum(){
 		subTotal += item.menuPrice * item.qty
 	}
 	totalBill = subTotal-discount
-	document.getElementById("subTotal").innerHTML = `Rp${subTotal.toLocaleString()}`
-	document.getElementById("discount").innerHTML = `Rp${discount.toLocaleString()}`
-	document.getElementById("totalBill").innerHTML = `Rp${totalBill.toLocaleString()}`
-	document.getElementById("balance").innerHTML = `Rp${balance.toLocaleString()}`
+	document.getElementById("subTotal").innerHTML = `${subTotal.toLocaleString()}`
+	document.getElementById("discount").innerHTML = `${discount.toLocaleString()}`
+	document.getElementById("totalBill").innerHTML = `${totalBill.toLocaleString()}`
+	document.getElementById("balance").innerHTML = `${balance.toLocaleString()}`
 }
 
 
@@ -379,7 +382,7 @@ function createOrder(event){
 				icon: "info",
 				showCancelButton: true,
 				cancelButtonColor: "#525253",
-				cancelButtonText: "Cancel Order",
+				cancelButtonText: "See My Order",
 				focusCancel: false
 			}
 		}
@@ -388,7 +391,7 @@ function createOrder(event){
 			if (result.isConfirmed) {
 				window.location.href = "menu.html"
 			} else if (result.isDismissed) {
-				cancelOrder(jsonResponse["data"]["order_id"])
+				window.location.href = "orders.html"
 			} else {
 				window.location.href = "index.html"
 			}
@@ -414,29 +417,52 @@ function createOrder(event){
 }
 
 //Cancel Order
-function cancelOrder(orderId){
-	fetch(`http://127.0.0.1:5000/order/cancel/${orderId}`, {
-		method: "PUT",
-		headers: { "Content-type": "application/json; charset=UTF-8" },
-		body: JSON.stringify({userData: JSON.parse(localStorage.getItem("userData"))})
+function cancelOrder(e, orderId){
+	e.preventDefault()
+	Swal.fire({
+		icon: "warning",
+		title: "Order Cancellation",
+		text: "Are you sure you want to cancel this order?",
+		background: "#1E1B1B",
+		color: "#fff",
+		showCloseButton: true,
+		confirmButtonColor: "#c49b5d",
+		confirmButtonText: "Yes",
+		showCancelButton: true,
+		cancelButtonColor: "#525253",
+		cancelButtonText: "No",
+		focusConfirm: false,
+		focusClose: false
 	})
-	.then((response) => response.json())
-	.then((jsonResponse) => {
-		Swal.fire({
-			icon: "success",
-			title: "Order Cancelled",
-			background: "#1E1B1B",
-			color: "#fff",
-			showCloseButton: true,
-			confirmButtonColor: "#c49b5d",
-			confirmButtonText: "OK",
-			focusConfirm: false,
-		})
-		.then((result) => {
-			window.location.href = "index.html"
-		})
+	.then((result) => {
+		if (result.isConfirmed){
+			fetch(`http://127.0.0.1:5000/order/cancel/${orderId}`, {
+				method: "PUT",
+				headers: { "Content-type": "application/json; charset=UTF-8" },
+				body: JSON.stringify({userData: JSON.parse(localStorage.getItem("userData"))})
+			})
+			.then((response) => response.json())
+			.then((jsonResponse) => {
+				Swal.fire({
+					icon: "success",
+					title: "Order Cancelled",
+					background: "#1E1B1B",
+					color: "#fff",
+					showCloseButton: true,
+					confirmButtonColor: "#c49b5d",
+					confirmButtonText: "OK",
+					focusConfirm: false,
+				})
+				.then((result) => {
+					window.location.reload()
+				})
+			})
+			.catch((err) => console.error(err.message))
+		}
+		else {
+			return false
+		}
 	})
-	.catch((err) => console.error(err.message))
 }
 
 //Sign In
@@ -571,10 +597,25 @@ if (window.location.pathname === '/profile.html'){
 // Display user data in sidebar
 function displaySidebar(){
 	const userData = JSON.parse(localStorage.getItem("userData"))
-	const userBalanceText = document.getElementById("user-balance-text")
-	const usernameSidebar = document.querySelector(".sidebar .user-name")
-	userBalanceText.innerHTML = `Rp${userData["balance"].toLocaleString()}`
-	usernameSidebar.innerHTML = userData["name"]
+	fetch('http://127.0.0.1:5000/user/details', {
+		method: "POST",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({email: userData["email"]})
+	})
+	.then((response) => response.json())
+	.then((jsonResponse) => {
+		const balance = jsonResponse["data"]["balance"]
+		const userName = jsonResponse["data"]["name"]
+		const userBalanceText = document.getElementById("user-balance-text")
+		const usernameSidebar = document.querySelector(".sidebar .user-name")
+		userBalanceText.innerHTML = `Rp${balance.toLocaleString()}`
+		usernameSidebar.innerHTML = userName
+
+		const userData = JSON.parse(localStorage.getItem("userData"))
+		userData["balance"] = balance
+		localStorage.setItem("userData", JSON.stringify(userData))
+	})
+	.catch((err) => console.error(err.message))
 }
 
 // Display user data in profile content
@@ -655,13 +696,13 @@ function getAllOrders(){
 							<a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
 							<div class="dropdown-menu" aria-labelledby="cardDropdown">
 								<a class="dropdown-item"><span class="icon icon-info-circle"></span>Details</a>
-								<a class="dropdown-item"><span class="icon icon-times-circle"></span>Cancel Order</a>
+								<a class="dropdown-item" onclick="cancelOrder(event, ${order.id})" ${order.status === "waiting-list"? "" : "hidden"}><span class="icon icon-times-circle"></span>Cancel Order</a>
 							</div>
 						</div>
 						<div class="order-card-body">
 							<div class="order-date-status-group">
 								<div class="order-date">${createdDate}</div>
-								<div class="order-status">${order.status}#<strong>1</strong></div>
+								<div class="order-status">${order.status}</div>
 							</div>
 							<div class="menu-group">
 								<div class="item-names">${order.items.length} item(s): ${orderItems}</div>
