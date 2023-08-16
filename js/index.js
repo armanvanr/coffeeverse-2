@@ -1,17 +1,17 @@
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
 	window.scrollTo(0, 0);
 }
 
-if (localStorage.length > 0 && localStorage.getItem("userData")){
+if (localStorage.length > 0 && localStorage.getItem("userData")) {
 	document.getElementById('nav-sign-in').style.display = 'none'
 	document.getElementById('nav-cart').style.display = 'block'
 	document.getElementById('nav-sign-out').style.display = 'block'
 	document.getElementById('nav-profile').style.display = 'block'
 	updateCartCount()
-    const joinBtns = document.querySelectorAll(".home-slider .btn-primary")
-    for (let button of joinBtns){
+	const joinBtns = document.querySelectorAll(".home-slider .btn-primary")
+	for (let button of joinBtns) {
 		button.style.display = "none"
-    }
+	}
 } else {
 	document.getElementById('nav-sign-in').style.display = 'block'
 	document.getElementById('nav-cart').style.display = 'none'
@@ -21,139 +21,148 @@ if (localStorage.length > 0 && localStorage.getItem("userData")){
 
 //Top 5 Coffee
 const homeUrlPath = ['/', '/index.html']
-if (homeUrlPath.includes(window.location.pathname)){
+if (homeUrlPath.includes(window.location.pathname)) {
 	window.addEventListener("load", getTopMenu)
 }
 async function getTopMenu() {
 	const bestSellerContainer = document.getElementById("best-seller-container")
 	try {
-        const response = await fetch('http://127.0.0.1:5000/menu/top5', {
-            method: "GET",
-            headers: { "Content-type": "application/json; charset=UTF-8" }
-        })
-        if (response.ok) {
-            const jsonResponse = await response.json()
-            const cards = jsonResponse["data"]["drinks"].map((menu) => {
-                return `<div class="col-md-4">
+		const response = await fetch('http://127.0.0.1:5000/menu/top5', {
+			method: "GET",
+			headers: { "Content-type": "application/json; charset=UTF-8" }
+		})
+		if (response.ok) {
+			const jsonResponse = await response.json()
+			const cards = jsonResponse["data"]["drinks"].map((menu) => {
+				return `<div class="col-md-4">
         					<div class="menu-entry menu-card-${menu.id}">
     							<a href="#" class="img" style="background-image: url(${menu.img_url});"></a>
     							<div class="text text-center pt-4">
     								<h3><a href="#">${menu.name}</a></h3>
     								<p class="desc">${menu.desc}</p>
     								<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-    								<p><a href="#" class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to Cart</a></p>
+    								<div class="topMenu">
+										<a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a>
+										<div class="added__animation"><span>+1</span></div>
+									</div>
     							</div>
     						</div>
         				</div>`
-            	})
-            bestSellerContainer.innerHTML = cards.join('<br/>')
+			})
+			bestSellerContainer.innerHTML = cards.join('<br/>')
 
-			if (localStorage.length > 0){
+			if (localStorage.length > 0) {
 				updateCartCount()
 			}
-        } else {
-            throw await response.json()
-        }
-    } catch (err) {
-        console.error(err.message)
-    }
+		} else {
+			throw await response.json()
+		}
+	} catch (err) {
+		console.error(err.message)
+	}
 }
 
 //Show All Menu Items
-if (window.location.pathname === '/menu.html'){
+if (window.location.pathname === '/menu.html') {
 	window.addEventListener("load", fetchAllMenu)
 }
 async function fetchAllMenu() {
 	let drinksContainer = document.querySelector("#all-drinks-container")
 	let foodsContainer = document.querySelector("#all-foods-container")
-    try {
-        const response = await fetch('http://127.0.0.1:5000/menu/available', {
-            method: "GET",
-            headers: { "Content-type": "application/json; charset=UTF-8" }
-        })
-        if (response.ok) {
-            const jsonResponse = await response.json()
-            for (let category in jsonResponse["data"]) {
-                const cards = jsonResponse["data"][`${category}`].map((menu) => {
-                    return `<div class="col-md-4 text-center">
+	try {
+		const response = await fetch('http://127.0.0.1:5000/menu/available', {
+			method: "GET",
+			headers: { "Content-type": "application/json; charset=UTF-8" }
+		})
+		if (response.ok) {
+			const jsonResponse = await response.json()
+			for (let category in jsonResponse["data"]) {
+				const cards = jsonResponse["data"][`${category}`].map((menu) => {
+					return `<div class="col-md-4 text-center">
 								<div class="menu-wrap menu-card-${menu.id}">
 									<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url});"></a>
 									<div class="text">
 										<h3><a href="#">${menu.name}</a></h3>
 										<p class="desc pt-1">${menu.desc}</p>
 										<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-										<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a></p>
+										<div class="allMenu">
+											<a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a>
+											<div class="added__animation"><span>+1</span></div>
+										</div>
 									</div>
 								</div>
 							</div>`
-                })
-                if (category === "drinks"){
-                    drinksContainer.innerHTML = cards.join('<br/>')
-                } else {
-                    foodsContainer.innerHTML = cards.join('<br/>')
-                }
-            }
+				})
+				if (category === "drinks") {
+					drinksContainer.innerHTML = cards.join('<br/>')
+				} else {
+					foodsContainer.innerHTML = cards.join('<br/>')
+				}
+			}
 
-			if (localStorage.length > 0){
+			if (localStorage.length > 0) {
 				updateCartCount()
 			}
-        } else {
-            throw await response.json()
-        }
-    } catch (err) {
-        console.error(err.message)
-    }
+		} else {
+			throw await response.json()
+		}
+	} catch (err) {
+		console.error(err.message)
+	}
 }
 
-async function searchMenu(event){
+async function searchMenu(event) {
 	event.preventDefault()
 	let searchResultContainer = document.getElementById("menu-search-container")
 	const searchValue = document.getElementById("search-field").value
 	try {
-        const response = await fetch('http://127.0.0.1:5000/menu/search?'+ new URLSearchParams({keyword:searchValue}), {
-            method: "GET",
-            headers: { "Content-type": "application/json; charset=UTF-8" }
-        })
-        if (response.ok) {
-            const jsonResponse = await response.json()
-            const cards = jsonResponse["data"]["results"].map((menu) => {
-            	return `<div class="col-md-4 text-center">
+		const response = await fetch('http://127.0.0.1:5000/menu/search?' + new URLSearchParams({ keyword: searchValue }), {
+			method: "GET",
+			headers: { "Content-type": "application/json; charset=UTF-8" }
+		})
+		if (response.ok) {
+			const jsonResponse = await response.json()
+			const cards = jsonResponse["data"]["results"].map((menu) => {
+				return `<div class="col-md-4 text-center">
 							<div class="menu-wrap" id="wrapper-${menu.id}">
-								<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url}); background-position: ${menu.category === 'drinks'? 'bottom':'center'}"></a>
+								<a href="#" class="menu-img img mb-4" style="background-image: url(${menu.img_url}); background-position: ${menu.category === 'drinks' ? 'bottom' : 'center'}"></a>
 								<div class="text">
 									<h3><a href="#">${menu.name}</a></h3>
 									<p class="desc pt-1">${menu.desc}</p>
 									<p class="price"><span>Rp${menu.price.toLocaleString()}</span></p>
-									<p><a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a></p>
+									<div class="searchMenu">
+										<a class="btn btn-primary btn-outline-primary" id="cart-menu-${menu.id}" onclick="addItemToCart(event, ${menu.id}, ${menu.stock})">Add to cart</a>
+										<div class="added__animation"><span>+1</span></div>
+									</div>
 								</div>
 							</div>
 						</div>`
-                })
-		    searchResultContainer.innerHTML = cards.join('<br/>')
-			
-			if (localStorage.length > 0){
+			})
+			searchResultContainer.innerHTML = cards.join('<br/>')
+
+			if (localStorage.length > 0) {
 				updateCartCount()
 			}
-        } else {
-            throw await response.json()
-        }
-    } catch (err) {
-        console.error(err.message)
-    }
+		} else {
+			throw await response.json()
+		}
+	} catch (err) {
+		console.error(err.message)
+	}
 }
 
 
-async function addItemToCart(event, menuId, menuStock){
+async function addItemToCart(event, menuId, menuStock) {
 	event.preventDefault()
-	if (localStorage.length > 0){
+	if (localStorage.length > 0) {
 		const menuName = document.querySelector(`.menu-card-${menuId} .text h3 a`).innerHTML
 		const menuImg = document.querySelector(`.menu-card-${menuId} a`).style.backgroundImage.split('"')[1]
 		const menuDesc = document.querySelector(`.menu-card-${menuId} .text .desc`).innerHTML
 		const menuPrice = document.querySelector(`.menu-card-${menuId} .price span`).innerHTML.slice(2).replace(',', '')
 		const cart = JSON.parse(localStorage.getItem("cartData"))
 		const addedItem = cart.find(item => item.menuId === menuId)
-		if (addedItem){
-			if (addedItem.qty < addedItem.menuStock){
+		if (addedItem) {
+			if (addedItem.qty < addedItem.menuStock) {
 				addedItem.qty += 1
 			} else {
 				Swal.fire({
@@ -167,10 +176,11 @@ async function addItemToCart(event, menuId, menuStock){
 					confirmButtonText: "OK",
 					focusConfirm: false,
 				})
+					.then((result) => { return False })
 			}
 		} else {
 			cart.push({
-				menuId : menuId,
+				menuId: menuId,
 				menuName: menuName,
 				menuImg: menuImg,
 				menuDesc: menuDesc,
@@ -180,6 +190,10 @@ async function addItemToCart(event, menuId, menuStock){
 			})
 		}
 		localStorage.setItem("cartData", JSON.stringify(cart))
+		const cartBtn = event.target
+		const plusOne = cartBtn.nextElementSibling
+		plusOne.classList.add("clicked")
+    	setTimeout(function(){ plusOne.classList.remove("clicked")}, 600)
 		
 		const navCartItemCount = document.querySelector("#nav-cart small")
 		const count = JSON.parse(localStorage.getItem("cartData")).length
@@ -190,12 +204,12 @@ async function addItemToCart(event, menuId, menuStock){
 	}
 }
 
-function updateCartCount(){
+function updateCartCount() {
 	const navCartItemCount = document.querySelector("#nav-cart small")
-	
+
 	const cartData = JSON.parse(localStorage.getItem("cartData"))
-	if (cartData !== null && cartData.length > 0){
-		const count = cartData.reduce((n, {qty}) => n + qty, 0)
+	if (cartData !== null && cartData.length > 0) {
+		const count = cartData.reduce((n, { qty }) => n + qty, 0)
 		navCartItemCount.innerHTML = count
 		navCartItemCount.parentElement.style.visibility = "visible"
 	}
@@ -206,17 +220,17 @@ function updateCartCount(){
 }
 
 //Show Cart Items
-if (window.location.pathname === '/cart.html'){
+if (window.location.pathname === '/cart.html') {
 	window.addEventListener("load", showCartItems)
 }
 
-function showCartItems(){
+function showCartItems() {
 	const cartItems = JSON.parse(localStorage.getItem("cartData"))
 	const cartTableRows = document.querySelector('.cart-list tbody')
 	if (cartItems.length === 0) {
 		window.location.href = '/index.html'
 	}
-	if (cartItems){
+	if (cartItems) {
 		const itemRows = cartItems.map((item) => {
 			return `<tr class="text-center" id="menu-${item.menuId}">
 						<td class="product-remove"><a href="" onclick="removeItemFromCart(event, ${item.menuId}, ${item.qty})"><span class="icon-close"></span></a></td>
@@ -254,7 +268,7 @@ function showCartItems(){
 	}
 }
 
-function plusQty(e, price, id){
+function plusQty(e, price, id) {
 	e.preventDefault()
 	let quantity = document.querySelector(`#menu-${id} .input-number`)
 	let total = document.querySelector(`#menu-${id} .total`)
@@ -262,9 +276,9 @@ function plusQty(e, price, id){
 	const idx = cartItems.findIndex((item) => item.menuId === id)
 	const item = cartItems[idx]
 
-	if (item.qty < item.menuStock){
+	if (item.qty < item.menuStock) {
 		quantity.value = parseInt(quantity.value) + 1
-		total.innerHTML = parseInt(quantity.value)*price
+		total.innerHTML = parseInt(quantity.value) * price
 		item.qty = parseInt(quantity.value)
 		cartItems[idx] = item
 		localStorage.setItem("cartData", JSON.stringify(cartItems))
@@ -285,7 +299,7 @@ function plusQty(e, price, id){
 	}
 }
 
-function minusQty(e, price, id){
+function minusQty(e, price, id) {
 	e.preventDefault()
 	let quantity = document.querySelector(`#menu-${id} .input-number`)
 	let total = document.querySelector(`#menu-${id} .total`)
@@ -293,9 +307,9 @@ function minusQty(e, price, id){
 	const idx = cartItems.findIndex((item) => item.menuId === id)
 	const item = cartItems[idx]
 
-	if (parseInt(quantity.value) > 1){
+	if (parseInt(quantity.value) > 1) {
 		quantity.value = parseInt(quantity.value) - 1
-		total.innerHTML = parseInt(quantity.value)*price
+		total.innerHTML = parseInt(quantity.value) * price
 		item.qty = parseInt(quantity.value)
 		cartItems[idx] = item
 		localStorage.setItem("cartData", JSON.stringify(cartItems))
@@ -305,13 +319,13 @@ function minusQty(e, price, id){
 }
 
 //Remove item from cart
-function removeItemFromCart(e, menuId){
+function removeItemFromCart(e, menuId) {
 	e.preventDefault()
 	const cart = JSON.parse(localStorage.getItem("cartData"))
-	
+
 	const newCart = cart.filter(item => item.menuId !== menuId)
 	localStorage.setItem("cartData", JSON.stringify(newCart))
-	
+
 	updateCartCount()
 	showCartItems()
 	billSum()
@@ -322,16 +336,16 @@ function removeItemFromCart(e, menuId){
 }
 
 //Sum up the bill
-function billSum(){
+function billSum() {
 	const cartItems = JSON.parse(localStorage.getItem("cartData"))
 	const balance = JSON.parse(localStorage.getItem("userData"))["balance"]
 	let subTotal = 0
 	const discount = 0
 	let totalBill = 0
-	for (item of cartItems){
+	for (item of cartItems) {
 		subTotal += item.menuPrice * item.qty
 	}
-	totalBill = subTotal-discount
+	totalBill = subTotal - discount
 	document.getElementById("subTotal").innerHTML = `${subTotal.toLocaleString()}`
 	document.getElementById("discount").innerHTML = `${discount.toLocaleString()}`
 	document.getElementById("totalBill").innerHTML = `${totalBill.toLocaleString()}`
@@ -340,84 +354,84 @@ function billSum(){
 
 
 //Create Order
-function createOrder(event){
+function createOrder(event) {
 	event.preventDefault()
 	const cartItems = JSON.parse(localStorage.getItem("cartData"))
 	const userData = JSON.parse(localStorage.getItem("userData"))
 	let data = []
-	for (item of cartItems){
-		data.push({menu_id :item.menuId, quantity: item.qty})
+	for (item of cartItems) {
+		data.push({ menu_id: item.menuId, quantity: item.qty })
 	}
 	fetch('http://127.0.0.1:5000/order/create', {
 		method: "POST",
 		headers: { "Content-type": "application/json; charset=UTF-8" },
-		body: JSON.stringify({order_items : data, user_data: userData})
+		body: JSON.stringify({ order_items: data, user_data: userData })
 	})
-	.then((response) => {
-		if (response.ok){
-			return response.json()
-		} else {
-			throw response
-		}
-	})
-	.then((jsonResponse) => {
-		//clear cartData in localstorage
-		localStorage.setItem("cartData", JSON.stringify([]))
-		
-		//show success modal: OK button, 'see order detail' button, and cancel button (if waiting list)
-		let swalParams = {
-			icon: "success",
-			title: "Order Successfully Received!",
-			text: `${jsonResponse["message"]}`,
-			background: "#1E1B1B",
-			color: "#fff",
-			showCloseButton: true,
-			confirmButtonColor: "#c49b5d",
-			confirmButtonText: "Create New Order",
-			focusConfirm: false,
-		}
-		if (jsonResponse["data"]["status"] === "waiting-list"){
-			swalParams = {
-				...swalParams,
-				icon: "info",
-				showCancelButton: true,
-				cancelButtonColor: "#525253",
-				cancelButtonText: "See My Order",
-				focusCancel: false
-			}
-		}
-		Swal.fire(swalParams)
-		.then((result) => {
-			if (result.isConfirmed) {
-				window.location.href = "menu.html"
-			} else if (result.isDismissed) {
-				window.location.href = "orders.html"
+		.then((response) => {
+			if (response.ok) {
+				return response.json()
 			} else {
-				window.location.href = "index.html"
+				throw response
 			}
 		})
-	})
-	.catch((err) => {
-		err.json()
-		.then((jsonError) => {
-			console.error(jsonError.message)
-			Swal.fire({
-				icon: "error",
-				title: "Failed to create an order",
-				text: `${jsonError["message"]}`,
+		.then((jsonResponse) => {
+			//clear cartData in localstorage
+			localStorage.setItem("cartData", JSON.stringify([]))
+
+			//show success modal: OK button, 'see order detail' button, and cancel button (if waiting list)
+			let swalParams = {
+				icon: "success",
+				title: "Order Successfully Received!",
+				text: `${jsonResponse["message"]}`,
 				background: "#1E1B1B",
 				color: "#fff",
 				showCloseButton: true,
 				confirmButtonColor: "#c49b5d",
-				confirmButtonText: "Change My Order",
+				confirmButtonText: "Create New Order",
 				focusConfirm: false,
-			})
+			}
+			if (jsonResponse["data"]["status"] === "waiting-list") {
+				swalParams = {
+					...swalParams,
+					icon: "info",
+					showCancelButton: true,
+					cancelButtonColor: "#525253",
+					cancelButtonText: "See My Order",
+					focusCancel: false
+				}
+			}
+			Swal.fire(swalParams)
+				.then((result) => {
+					if (result.isConfirmed) {
+						window.location.href = "menu.html"
+					} else if (result.isDismissed) {
+						window.location.href = "orders.html"
+					} else {
+						window.location.href = "index.html"
+					}
+				})
 		})
-	})
+		.catch((err) => {
+			err.json()
+				.then((jsonError) => {
+					console.error(jsonError.message)
+					Swal.fire({
+						icon: "error",
+						title: "Failed to create an order",
+						text: `${jsonError["message"]}`,
+						background: "#1E1B1B",
+						color: "#fff",
+						showCloseButton: true,
+						confirmButtonColor: "#c49b5d",
+						confirmButtonText: "Change My Order",
+						focusConfirm: false,
+					})
+				})
+		})
 }
 
 //Cancel Order
-function cancelOrder(e, orderId){
+function cancelOrder(e, orderId) {
 	e.preventDefault()
 	Swal.fire({
 		icon: "warning",
@@ -434,192 +448,193 @@ function cancelOrder(e, orderId){
 		focusConfirm: false,
 		focusClose: false
 	})
-	.then((result) => {
-		if (result.isConfirmed){
-			fetch(`http://127.0.0.1:5000/order/cancel/${orderId}`, {
-				method: "PUT",
-				headers: { "Content-type": "application/json; charset=UTF-8" },
-				body: JSON.stringify({userData: JSON.parse(localStorage.getItem("userData"))})
-			})
-			.then((response) => response.json())
-			.then((jsonResponse) => {
-				Swal.fire({
-					icon: "success",
-					title: "Order Cancelled",
-					background: "#1E1B1B",
-					color: "#fff",
-					showCloseButton: true,
-					confirmButtonColor: "#c49b5d",
-					confirmButtonText: "OK",
-					focusConfirm: false,
+		.then((result) => {
+			if (result.isConfirmed) {
+				fetch(`http://127.0.0.1:5000/order/cancel/${orderId}`, {
+					method: "PUT",
+					headers: { "Content-type": "application/json; charset=UTF-8" },
+					body: JSON.stringify({ userData: JSON.parse(localStorage.getItem("userData")) })
 				})
-				.then((result) => {
-					window.location.reload()
-				})
-			})
-			.catch((err) => console.error(err.message))
-		}
-		else {
-			return false
-		}
-	})
+					.then((response) => response.json())
+					.then((jsonResponse) => {
+						Swal.fire({
+							icon: "success",
+							title: "Order Cancelled",
+							background: "#1E1B1B",
+							color: "#fff",
+							showCloseButton: true,
+							confirmButtonColor: "#c49b5d",
+							confirmButtonText: "OK",
+							focusConfirm: false,
+						})
+							.then((result) => {
+								window.location.reload()
+							})
+					})
+					.catch((err) => console.error(err.message))
+			}
+			else {
+				return false
+			}
+		})
 }
 
 //Sign In
-if (window.location.pathname === '/signin.html'){
+if (window.location.pathname === '/signin.html') {
 	let formSubmit = document.getElementById("btn-sign-in")
 	formSubmit.addEventListener("click", signin)
 }
 
 function signin(e) {
-    e.preventDefault()
-    let email = document.getElementById("sign-in-email").value
-    let password = document.getElementById("sign-in-password").value
-    let token = btoa(email + ":" + password)
-    let myHeaders = new Headers()
-    myHeaders.append("Authorization", "Basic" + " " + token)
-    myHeaders.append("Content-type", "application/json; charset=UTF-8")
+	e.preventDefault()
+	let email = document.getElementById("sign-in-email").value
+	let password = document.getElementById("sign-in-password").value
+	let token = btoa(email + ":" + password)
+	let myHeaders = new Headers()
+	myHeaders.append("Authorization", "Basic" + " " + token)
+	myHeaders.append("Content-type", "application/json; charset=UTF-8")
 
-    let statusBox = document.getElementById("sign-in-status")
-    fetch('http://127.0.0.1:5000/user/login', {
-        method: "POST",
-        headers: myHeaders,
-    })
-        .then((response) => {
-            if (response.ok === false) {
-                throw response
-            } else {
-                return response.json()
-            }
-        })
-        .then((jsonResponse) => {
-                localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
-				localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]["cart"]))
-				window.location.href = 'http://127.0.0.1:5500/index.html'
-        })
-        .catch((error) => {
-            statusBox.style.color = "#ff3f3f"
-            if (error.status === 401) {
-                statusBox.innerHTML = "Email and password does not match"
-            } else if (error.status === 404) {
-                statusBox.innerHTML = "User not found"
-            }
-        });
+	let statusBox = document.getElementById("sign-in-status")
+	fetch('http://127.0.0.1:5000/user/login', {
+		method: "POST",
+		headers: myHeaders,
+	})
+		.then((response) => {
+			if (response.ok === false) {
+				throw response
+			} else {
+				return response.json()
+			}
+		})
+		.then((jsonResponse) => {
+			localStorage.setItem("userData", JSON.stringify(jsonResponse["data"]))
+			localStorage.setItem("cartData", JSON.stringify(jsonResponse["data"]["cart"]))
+			window.location.href = 'http://127.0.0.1:5500/index.html'
+		})
+		.catch((error) => {
+			statusBox.style.color = "#ff3f3f"
+			if (error.status === 401) {
+				statusBox.innerHTML = "Email and password does not match"
+			} else if (error.status === 404) {
+				statusBox.innerHTML = "User not found"
+			}
+		});
 }
 
 //Sign Up
-if (window.location.pathname === '/signup.html'){
+if (window.location.pathname === '/signup.html') {
 	let formSubmit = document.getElementById("btn-sign-up")
 	formSubmit.addEventListener("click", signup)
 }
 
 async function signup(e) {
-    e.preventDefault()
-    let name = document.getElementById("sign-up-name").value
-    let email = document.getElementById("sign-up-email").value
-    let password = document.getElementById("sign-up-password").value
-    let confirmPassword = document.getElementById("sign-up-confirm-password").value
-    let statusBox = document.getElementById("sign-up-status")
-	if (!name || !email || !password || !confirmPassword){
-        statusBox.style.color = "#ff3f3f"
-        statusBox.innerHTML = "Please fill all form fields"
+	e.preventDefault()
+	let name = document.getElementById("sign-up-name").value
+	let email = document.getElementById("sign-up-email").value
+	let password = document.getElementById("sign-up-password").value
+	let confirmPassword = document.getElementById("sign-up-confirm-password").value
+	let statusBox = document.getElementById("sign-up-status")
+	if (!name || !email || !password || !confirmPassword) {
+		statusBox.style.color = "#ff3f3f"
+		statusBox.innerHTML = "Please fill all form fields"
 		throw Error("BAD REQUEST")
-    }
-    if (password === confirmPassword) {
-        try {
-            const response = await fetch('http://127.0.0.1:5000/user/register', {
-                method: "POST",
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    password: password,
-                    role: "member"
-                }),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
-            })
-            if (response.ok) {
-                statusBox.innerHTML = "Account created successfully"
-                statusBox.style.color = "#4bb543"
-                let inputFields = document.querySelectorAll("input")
-                for (let el of inputFields) {
-                    el.value = ""
-                }
-				setTimeout(()=> {
+	}
+	if (password === confirmPassword) {
+		try {
+			const response = await fetch('http://127.0.0.1:5000/user/register', {
+				method: "POST",
+				body: JSON.stringify({
+					name: name,
+					email: email,
+					password: password,
+					role: "member"
+				}),
+				headers: { "Content-type": "application/json; charset=UTF-8" }
+			})
+			if (response.ok) {
+				statusBox.innerHTML = "Account created successfully"
+				statusBox.style.color = "#4bb543"
+				let inputFields = document.querySelectorAll("input")
+				for (let el of inputFields) {
+					el.value = ""
+				}
+				setTimeout(() => {
 					let sec = 3
-					setInterval(()=> {
+					setInterval(() => {
 						statusBox.innerHTML = `Redirected to Sign in Page in ${sec} second(s)`
-						sec-=1
+						sec -= 1
 					}, 1000)
-					setTimeout(() => window.location.href = "signin.html", 4000)}, 1000)
-				
-            } else {
-                throw await response.json()
-            }
-        } catch (error) {
-            statusBox.innerHTML = error.message
-            statusBox.style.color = "#ff3f3f"
-        }
-    } else {
-        statusBox.innerHTML = "Password does not match"
-        statusBox.style.color = "#ff3f3f"
-    }
+					setTimeout(() => window.location.href = "signin.html", 4000)
+				}, 1000)
+
+			} else {
+				throw await response.json()
+			}
+		} catch (error) {
+			statusBox.innerHTML = error.message
+			statusBox.style.color = "#ff3f3f"
+		}
+	} else {
+		statusBox.innerHTML = "Password does not match"
+		statusBox.style.color = "#ff3f3f"
+	}
 }
 
 //Sign Out
 let signOutBtn = document.getElementById("nav-sign-out")
 signOutBtn.addEventListener("click", signout)
-function signout(e){
+function signout(e) {
 	e.preventDefault()
 	fetch('http://127.0.0.1:5000/user/logout', {
 		method: "PUT",
 		headers: { "Content-type": "application/json; charset=UTF-8" },
-		body: JSON.stringify({cartData: JSON.parse(localStorage.getItem("cartData")), userData: JSON.parse(localStorage.getItem("userData"))})
+		body: JSON.stringify({ cartData: JSON.parse(localStorage.getItem("cartData")), userData: JSON.parse(localStorage.getItem("userData")) })
 	})
-	.then((response) => {
-		localStorage.clear()
-		window.location.href = "index.html"
-	})
-	.catch((err)=>{
-		console.error(err.message)
-	})
+		.then((response) => {
+			localStorage.clear()
+			window.location.href = "index.html"
+		})
+		.catch((err) => {
+			console.error(err.message)
+		})
 }
 
 // Member Account Page
 const accountUrlPath = ['/profile.html', '/orders.html', '/wallet.html']
-if (accountUrlPath.includes(window.location.pathname)){
+if (accountUrlPath.includes(window.location.pathname)) {
 	displaySidebar()
 }
 
-if (window.location.pathname === '/profile.html'){
+if (window.location.pathname === '/profile.html') {
 	displayUserData()
 }
 
 // Display user data in sidebar
-function displaySidebar(){
+function displaySidebar() {
 	const userData = JSON.parse(localStorage.getItem("userData"))
 	fetch('http://127.0.0.1:5000/user/details', {
 		method: "POST",
 		headers: { "Content-type": "application/json; charset=UTF-8" },
-		body: JSON.stringify({email: userData["email"]})
+		body: JSON.stringify({ email: userData["email"] })
 	})
-	.then((response) => response.json())
-	.then((jsonResponse) => {
-		const balance = jsonResponse["data"]["balance"]
-		const userName = jsonResponse["data"]["name"]
-		const userBalanceText = document.getElementById("user-balance-text")
-		const usernameSidebar = document.querySelector(".sidebar .user-name")
-		userBalanceText.innerHTML = `Rp${balance.toLocaleString()}`
-		usernameSidebar.innerHTML = userName
+		.then((response) => response.json())
+		.then((jsonResponse) => {
+			const balance = jsonResponse["data"]["balance"]
+			const userName = jsonResponse["data"]["name"]
+			const userBalanceText = document.getElementById("user-balance-text")
+			const usernameSidebar = document.querySelector(".sidebar .user-name")
+			userBalanceText.innerHTML = `Rp${balance.toLocaleString()}`
+			usernameSidebar.innerHTML = userName
 
-		const userData = JSON.parse(localStorage.getItem("userData"))
-		userData["balance"] = balance
-		localStorage.setItem("userData", JSON.stringify(userData))
-	})
-	.catch((err) => console.error(err.message))
+			const userData = JSON.parse(localStorage.getItem("userData"))
+			userData["balance"] = balance
+			localStorage.setItem("userData", JSON.stringify(userData))
+		})
+		.catch((err) => console.error(err.message))
 }
 
 // Display user data in profile content
-function displayUserData(){
+function displayUserData() {
 	const userData = JSON.parse(localStorage.getItem("userData"))
 	const usernameInput = document.getElementById("user-name-input")
 	const userNameText = document.getElementById("user-name-text")
@@ -630,7 +645,7 @@ function displayUserData(){
 }
 
 const changeToggleBtn = document.getElementById("data-change")
-function changeToggle(e){
+function changeToggle(e) {
 	e.preventDefault()
 	const usernameInput = document.getElementById("user-name-input")
 	const userNameText = document.getElementById("user-name-text")
@@ -641,62 +656,62 @@ function changeToggle(e){
 }
 
 const saveToggleBtn = document.getElementById("data-save")
-function saveToggle(e){
+function saveToggle(e) {
 	e.preventDefault()
 	const usernameInput = document.getElementById("user-name-input")
 	const userData = JSON.parse(localStorage.getItem("userData"))
 	fetch('http://127.0.0.1:5000/user/update', {
 		method: "PUT",
 		headers: { "Content-type": "application/json; charset=UTF-8" },
-		body: JSON.stringify({name: usernameInput.value, email: userData["email"]})
+		body: JSON.stringify({ name: usernameInput.value, email: userData["email"] })
 	})
-	.then((response) => response.json())
-	.then((jsonResponse) => {
-		Swal.fire({
-			icon: "success",
-			title: "User Data Successfully Changed",
-			background: "#1E1B1B",
-			color: "#fff",
-			showCloseButton: true,
-			confirmButtonColor: "#c49b5d",
-			confirmButtonText: "OK",
-			focusConfirm: false
+		.then((response) => response.json())
+		.then((jsonResponse) => {
+			Swal.fire({
+				icon: "success",
+				title: "User Data Successfully Changed",
+				background: "#1E1B1B",
+				color: "#fff",
+				showCloseButton: true,
+				confirmButtonColor: "#c49b5d",
+				confirmButtonText: "OK",
+				focusConfirm: false
+			})
+				.then((response) => {
+					userData["name"] = usernameInput.value
+					localStorage.setItem("userData", JSON.stringify(userData))
+					saveToggleBtn.style.display = "none"
+					changeToggleBtn.style.display = "inline-block"
+					window.location.reload()
+				})
 		})
-		.then((response) => {
-			userData["name"] = usernameInput.value
-			localStorage.setItem("userData", JSON.stringify(userData))
-			saveToggleBtn.style.display = "none"
-			changeToggleBtn.style.display = "inline-block"
-			window.location.reload()
-		})
-	})
 }
 
 // Display all orders created by user
-if (window.location.pathname === '/orders.html'){
+if (window.location.pathname === '/orders.html') {
 	window.addEventListener("load", getAllOrders)
 }
-function getAllOrders(){
+function getAllOrders() {
 	const orderCardsContainer = document.querySelector(".order-cards-container")
 	const email = JSON.parse(localStorage.getItem("userData"))["email"]
 	fetch('http://127.0.0.1:5000/orders/user', {
-            method: "POST",
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-			body: JSON.stringify({email: email})
-    })
-	.then((response) => response.json())
-	.then((jsonResponse) => {
-		const orders = jsonResponse["data"]["order_list"]
-		const cards = orders.map((order) => {
-			const orderItems = order.items.join(", ")
-			const createdDate = order.created_date.slice(0, 16)
-			return `<div class="order-card">
+		method: "POST",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({ email: email })
+	})
+		.then((response) => response.json())
+		.then((jsonResponse) => {
+			const orders = jsonResponse["data"]["order_list"]
+			const cards = orders.map((order) => {
+				const orderItems = order.items.join(", ")
+				const createdDate = order.created_date.slice(0, 16)
+				return `<div class="order-card">
 						<div class="order-card-header">
 							<h6 class="order-id-group">Order ID: <strong>${order.id}</strong></h6>
 							<a href="" class="nav-link dropdown-toggle" id="cardDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-more_vert"></span></a>
 							<div class="dropdown-menu" aria-labelledby="cardDropdown">
 								<a class="dropdown-item"><span class="icon icon-info-circle"></span>Details</a>
-								<a class="dropdown-item" onclick="cancelOrder(event, ${order.id})" ${order.status === "waiting-list"? "" : "hidden"}><span class="icon icon-times-circle"></span>Cancel Order</a>
+								<a class="dropdown-item" onclick="cancelOrder(event, ${order.id})" ${order.status === "waiting-list" ? "" : "hidden"}><span class="icon icon-times-circle"></span>Cancel Order</a>
 							</div>
 						</div>
 						<div class="order-card-body">
@@ -710,7 +725,7 @@ function getAllOrders(){
 							</div>
 						</div>
 					</div>`
+			})
+			orderCardsContainer.innerHTML = cards.join("")
 		})
-		orderCardsContainer.innerHTML = cards.join("")
-	})
 }

@@ -7972,10 +7972,11 @@ h1, h2, h3, h4, h5,
 
 ::-webkit-scrollbar {
   width: 10px;
+  background-color: #ffeeba;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
   border: 1px solid grey;
   margin-left: 5px;
 }
@@ -8517,6 +8518,49 @@ h1, h2, h3, h4, h5,
       color: #fff; }
 .menu-wrap .desc {
     height: 85px;
+}
+.menu-wrap .btn-outline-primary {
+  position: relative;
+}
+
+/* add to cart button animation */
+.added__animation {
+  position: absolute;
+  right: 50px;
+  bottom: 55px;
+  margin: auto;
+  height: 38px;
+  width: 38px;
+  display: inline-block;
+  border: 2px solid #C49B63;
+  border-radius: 50%;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.75) translateY(0px);
+  transition: opacity 0.2s ease, transform 0.8s cubic-bezier(.18,1.22,.61,1.38);
+}
+
+.added__animation span {
+  color: #fff;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  height: 15px;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.clicked {
+  opacity: 1;
+  transform: scale(1.2) translateY(-30px);
 }
 
 .ftco-appointment {
