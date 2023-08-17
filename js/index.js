@@ -1,6 +1,6 @@
-window.onbeforeunload = function () {
+document.addEventListener("DOMContentLoaded", function () {
 	window.scrollTo(0, 0);
-}
+})
 
 if (localStorage.length > 0 && localStorage.getItem("userData")) {
 	document.getElementById('nav-sign-in').style.display = 'none'
@@ -193,8 +193,8 @@ async function addItemToCart(event, menuId, menuStock) {
 		const cartBtn = event.target
 		const plusOne = cartBtn.nextElementSibling
 		plusOne.classList.add("clicked")
-    	setTimeout(function(){ plusOne.classList.remove("clicked")}, 600)
-		
+		setTimeout(function () { plusOne.classList.remove("clicked") }, 600)
+
 		const navCartItemCount = document.querySelector("#nav-cart small")
 		const count = JSON.parse(localStorage.getItem("cartData")).length
 		navCartItemCount.innerHTML = count
@@ -600,7 +600,7 @@ function signout(e) {
 }
 
 // Member Account Page
-const accountUrlPath = ['/profile.html', '/orders.html', '/wallet.html']
+const accountUrlPath = ['/profile.html', '/orders.html', '/ewallet.html']
 if (accountUrlPath.includes(window.location.pathname)) {
 	displaySidebar()
 }
@@ -702,6 +702,12 @@ function getAllOrders() {
 		.then((response) => response.json())
 		.then((jsonResponse) => {
 			const orders = jsonResponse["data"]["order_list"]
+			const statusColor = {
+				"in-process": "#77a8e9",
+				"waiting-list": "#f8b500",
+				"completed": "#4bb543",
+				"cancelled": "#ff3f3f"
+			}
 			const cards = orders.map((order) => {
 				const orderItems = order.items.join(", ")
 				const createdDate = order.created_date.slice(0, 16)
@@ -717,7 +723,7 @@ function getAllOrders() {
 						<div class="order-card-body">
 							<div class="order-date-status-group">
 								<div class="order-date">${createdDate}</div>
-								<div class="order-status">${order.status}</div>
+								<div class="order-status" style="color: ${statusColor[order.status]}">${order.status}</div>
 							</div>
 							<div class="menu-group">
 								<div class="item-names">${order.items.length} item(s): ${orderItems}</div>
@@ -727,5 +733,54 @@ function getAllOrders() {
 					</div>`
 			})
 			orderCardsContainer.innerHTML = cards.join("")
+		})
+}
+
+//Display Balance Transaction
+if (window.location.pathname === '/ewallet.html') {
+	window.addEventListener("load", getAllWalletRecords)
+}
+function getAllWalletRecords() {
+	const walletCardsContainer = document.querySelector(".wallet-cards-container")
+	const email = JSON.parse(localStorage.getItem("userData"))["email"]
+	fetch('http://127.0.0.1:5000/balance/user', {
+		method: "POST",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({ email: email })
+	})
+		.then((response) => response.json())
+		.then((jsonResponse) => {
+			const records = jsonResponse["data"]["record_list"]
+			let balanceDate
+			const iconType = {
+				"topup": "icon-dollar",
+				"payment": "icon-coffee",
+				"refund": "icon-undo"
+			}
+			function capitalize(word){
+				return word.charAt(0).toUpperCase()+word.slice(1)
+			}
+			const cards = records.map((record) => {
+				if (record.completed_date) {
+					balanceDate = record.completed_date.slice(0, 16)
+				} else {
+					balanceDate = record.created_date.slice(0, 16)
+				}
+				const recordType = capitalize(record.type)
+				return `<div class="wallet-card">
+							<div class="wallet-card-header">
+								<h6 class="wallet-date">${balanceDate}</h6>
+								<a href="" class="nav-link"><span class="icon icon-info-circle"></span></a>
+							</div>
+							<div class="wallet-card-body d-flex justify-content-between">
+								<div class="wallet-type"><div class="icon ${iconType[record.type]}"></div><div><em>${recordType}</em></div></div>
+								<div class="nominal" style="color: ${record.type === "topup"? "#4bb543" : "inherit"}">
+									<span style="${record.type === "topup"? "display: flex; color: #4bb543" : "display: none"}">+&nbsp;</span>
+									<strong>Rp${record.nominal.toLocaleString()}</strong>
+								</div>
+							</div>
+						</div>`
+			})
+			walletCardsContainer.innerHTML = cards.join("")
 		})
 }
