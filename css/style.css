@@ -7963,30 +7963,32 @@ h1, h2, h3, h4, h5,
   margin-top: 20px;
 }
 
-.order-cards-container {
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #C49B63;
+  border-radius: 10px;
+  border: 1px solid #fff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(34, 45%, 52%);
+}
+
+.order-cards-container,
+.wallet-cards-container {
   max-height: 84%;
   width: 90%;
   margin: auto;
   overflow: auto;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-  background-color: #ffeeba;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-track {
-  border: 1px solid grey;
-  margin-left: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #C49B63;
-  border-radius: 10px;
-}
-
-.order-card {
+.order-card,
+.wallet-card {
   padding: 20px;
   border-radius: 10px;
   background-color: #151111;
@@ -7994,7 +7996,8 @@ h1, h2, h3, h4, h5,
   margin-bottom: 10px;
 }
 
-.order-card-header {
+.order-card-header,
+.wallet-card-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -8003,15 +8006,18 @@ h1, h2, h3, h4, h5,
   margin-bottom: 10px;
 }
 
-.order-card-header .nav-link .icon {
+.order-card-header .nav-link .icon,
+.wallet-card-header .nav-link .icon {
   font-size: 1.2rem;
 }
 
-.order-card-header .nav-link .icon:hover {
+.order-card-header .nav-link .icon:hover,
+.wallet-card-header .nav-link .icon:hover {
   color: #fff;
 }
 
-.order-card-body div{
+.order-card-body div,
+.wallet-card-body div {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -8045,6 +8051,13 @@ h1, h2, h3, h4, h5,
 
 .order-card-header .dropdown-menu .dropdown-item span {
   color: #fff;
+}
+
+.wallet-type {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .menu-group .item-names {
@@ -8313,37 +8326,74 @@ h1, h2, h3, h4, h5,
 
 /* .cart-list {
   overflow-x: scroll; } */
+.topup-btn-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 35px;
+  margin: 15px 0;
+  gap: 10px;
+}
 
-.modal-success .modal-header{
+.topup-btn-container span {
+  color: #fff;
+}
+
+.modal-input .modal-header{
   border-bottom: none;
   position: relative;
 	text-align: center;
   padding: 15px;
 }
 
-.modal-success .close{
+.modal-input .close{
   position: absolute;
   top: 15px;
   right: 15px;
 }
 
-.modal-success .icon-box{
+.modal-input .icon-box{
   padding: 20px;
   border-radius: 50%;
   border: 2px solid #c49b5d;
 }
 
-.modal-success .icon-box div{
+.modal-input .icon-box div{
   color: #c49b5d;
   font-size: 60px;
 }
 
-.modal-success .modal-body{
+.modal-input .modal-body{
   color: #fff;
 }
 
-.modal-success .modal-footer{
+.modal-input .modal-footer{
   border-top: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#nominal-input {
+  color: gray;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #c49b63;
+}
+
+#nominal-input:focus {
+    outline: none;
+    color: #fff;
 }
 
 .table {
