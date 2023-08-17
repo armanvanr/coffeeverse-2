@@ -757,8 +757,8 @@ function getAllWalletRecords() {
 				"payment": "icon-coffee",
 				"refund": "icon-undo"
 			}
-			function capitalize(word){
-				return word.charAt(0).toUpperCase()+word.slice(1)
+			function capitalize(word) {
+				return word.charAt(0).toUpperCase() + word.slice(1)
 			}
 			const cards = records.map((record) => {
 				if (record.completed_date) {
@@ -774,8 +774,8 @@ function getAllWalletRecords() {
 							</div>
 							<div class="wallet-card-body d-flex justify-content-between">
 								<div class="wallet-type"><div class="icon ${iconType[record.type]}"></div><div><em>${recordType}</em></div></div>
-								<div class="nominal" style="color: ${record.type === "topup"? "#4bb543" : "inherit"}">
-									<span style="${record.type === "topup"? "display: flex; color: #4bb543" : "display: none"}">+&nbsp;</span>
+								<div class="nominal" style="color: ${record.type === "topup" ? "#4bb543" : "inherit"}">
+									<span style="${record.type === "topup" ? "display: flex; color: #4bb543" : "display: none"}">+&nbsp;</span>
 									<strong>Rp${record.nominal.toLocaleString()}</strong>
 								</div>
 							</div>
@@ -783,4 +783,59 @@ function getAllWalletRecords() {
 			})
 			walletCardsContainer.innerHTML = cards.join("")
 		})
+}
+
+function topup(e) {
+	e.preventDefault()
+	const topupInput = parseInt(document.getElementById("nominal-input").value)
+	const email = JSON.parse(localStorage.getItem("userData"))["email"]
+	fetch('http://127.0.0.1:5000/balance/topup', {
+		method: "POST",
+		headers: { "Content-type": "application/json; charset=UTF-8" },
+		body: JSON.stringify({ email: email, nominal: topupInput })
+	})
+		.then((response) => {
+			if (response.ok) {
+				return response.json()
+			} else {
+				throw response
+			}
+		})
+		.then((jsonResponse) => {
+			Swal.fire({
+				icon: "success",
+				title: "Top Up Success!",
+				background: "#1E1B1B",
+				color: "#fff",
+				showCloseButton: true,
+				confirmButtonColor: "#c49b5d",
+				confirmButtonText: "OK",
+				focusConfirm: false
+			})
+				.then((result) => {
+					window.location.reload()
+				})
+		})
+		.catch((err) => {
+			// console.error(err.message)
+			err.json()
+				.then((jsonError) => {
+					console.error(jsonError.message)
+					Swal.fire({
+						icon: "error",
+						title: `${jsonError.message}`,
+						background: "#1E1B1B",
+						color: "#fff",
+						showCloseButton: true,
+						confirmButtonColor: "#c49b5d",
+						confirmButtonText: "OK",
+						focusConfirm: false
+					})
+				})
+		})
+}
+function cancelTopup(e) {
+	e.preventDefault()
+	const topupInput = document.getElementById("nominal-input")
+	topupInput.value = ""
 }

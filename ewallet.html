@@ -67,35 +67,14 @@
             </div>
         </div>
         <div class="profile-content">
-            <h4>E-Wallet History</h4>
-            <hr/>
+            <h4>E-Wallet</h4>
+            <!-- <hr/> -->
             <div class="topup-btn-container">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderStatus" id="topUpBtn">
+                <h6>Transaction History</h6>
+                <button type="button" class="btn btn-primary d-flex align-items-center" data-toggle="modal" data-target="#topupModal" id="topUpBtn">
                     <span class="icon-plus-square"></span>
-                    <span>Top Up</span>
+                    <span>&nbsp;&nbsp;Top Up</span>
                 </button>
-                <!-- Modal -->
-                <div class="modal fade" id="orderStatus" aria-labelledby="" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered modal-success" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header d-flex justify-content-center align-items-center">
-                        <div class="icon-box">
-                          <div class="icon-check"></div>
-                        </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body text-center">
-                        Order successfully created!
-                      </div>
-                      <div class="modal-footer d-flex justify-content-center">
-                        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                        <button type="button" class="btn btn-primary">See order details</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
             </div>
             <div class="wallet-cards-container"></div>
         </div>
@@ -109,6 +88,29 @@
                 stroke="#F96D00" />
         </svg>
     </div>
+
+    <!-- Top Up Modal -->
+    <div class="modal fade" id="topupModal" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-input" role="document">
+          <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center align-items-center">
+              <h4>E-wallet Top Up</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-center">
+              <div class="input">
+                <input type="number" min="10000" id="nominal-input" placeholder="minimum: 10000">
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-primary" onclick="topup(event)">Top Up</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelTopup(event)">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
     <script src="js/jquery.min.js"></script>
